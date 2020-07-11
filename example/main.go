@@ -10,10 +10,26 @@
 
 package main
 
-import "github.com/Lemo-yxk/console"
+import (
+	"encoding/json"
+	"log"
+
+	"github.com/Lemo-yxk/console"
+)
+
+type hook struct{}
+
+func (h *hook) Fire(entry *console.Entry) {
+	var bts, _ = json.Marshal(entry)
+	log.Println(string(bts))
+}
 
 func main() {
+
+	var a = &hook{}
+	console.SetHook(a)
 	console.Info("hello")
+	console.SetColor(false)
 	console.SetFormatter(console.NewJsonFormatter())
 	console.Info("hello")
 }

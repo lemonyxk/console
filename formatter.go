@@ -31,8 +31,8 @@ func (f *textFormatter) Format(entry *Entry) string {
 
 	var flags []string
 
-	if entry.Level > 0 {
-		flags = append(flags, entry.Level.String())
+	if entry.Level != "" {
+		flags = append(flags, string(entry.Level))
 	}
 
 	if !entry.Time.IsZero() {
@@ -58,8 +58,8 @@ type jsonFormatter struct{}
 func (f *jsonFormatter) Format(entry *Entry) string {
 	var data = make(map[string]interface{})
 
-	if entry.Level > 0 {
-		data["level"] = entry.Level.String()
+	if entry.Level != "" {
+		data["level"] = entry.Level
 	}
 
 	if !entry.Time.IsZero() {

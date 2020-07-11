@@ -19,7 +19,11 @@ func SetFlags(flags int) {
 	handlerLogger.Flags = flags
 }
 
-func SetHook(hook func(entry *Entry)) {
+func SetColor(flag bool) {
+	handlerLogger.Color = flag
+}
+
+func SetHook(hook Hook) {
 	handlerLogger.Hook = hook
 }
 

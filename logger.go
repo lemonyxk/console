@@ -23,17 +23,22 @@ const (
 )
 
 func NewLogger() *Logger {
-	return &Logger{Formatter: NewTextFormatter(), Flags: LEVEL | TIME | FILE}
+	return &Logger{Formatter: NewTextFormatter(), Flags: LEVEL | TIME | FILE, Color: true}
 }
 
 type Logger struct {
-	Hook      func(entry *Entry)
+	Hook      Hook
 	Formatter Formatter
 	Flags     int
+	Color     bool
 }
 
-func (log *Logger) SetHook(hook func(entry *Entry)) {
+func (log *Logger) SetHook(hook Hook) {
 	log.Hook = hook
+}
+
+func (log *Logger) SetColor(flag bool) {
+	log.Color = flag
 }
 
 func (log *Logger) SetFormatter(formatter Formatter) {
@@ -151,13 +156,21 @@ func (log *Logger) doPrint(level Level, color Color, ln bool, format string, arg
 		str = log.Formatter.Format(entry)
 	}
 
-	if ln {
-		color.Printf("%s\n", str)
+	if !log.Color {
+		if ln {
+			fmt.Printf("%s\n", str)
+		} else {
+			fmt.Printf("%s", str)
+		}
 	} else {
-		color.Printf("%s", str)
+		if ln {
+			color.Printf("%s\n", str)
+		} else {
+			color.Printf("%s", str)
+		}
 	}
 
 	if log.Hook != nil {
-		log.Hook(entry)
+		log.Hook.Fire(entry)
 	}
 }

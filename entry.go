@@ -12,34 +12,20 @@ package console
 
 import "time"
 
-type Level int
+type Level string
 
 const (
-	ERR Level = iota + 1
-	INF
-	DEB
-	WAR
+	ERR Level = "ERR"
+	INF Level = "INF"
+	DEB Level = "DEB"
+	WAR Level = "WAR"
 )
-
-func (level Level) String() string {
-	switch level {
-	case ERR:
-		return "ERR"
-	case INF:
-		return "INF"
-	case DEB:
-		return "DEB"
-	case WAR:
-		return "WAR"
-	}
-	panic("invalid level")
-}
 
 type Entry struct {
 	Level  Level
 	File   string
 	Line   int
 	Time   time.Time
-	Args   []interface{}
 	Format string
+	Args   []interface{}
 }
