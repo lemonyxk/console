@@ -14,7 +14,7 @@ import (
 	"encoding/json"
 	"log"
 
-	"github.com/Lemo-yxk/console"
+	"github.com/lemoyxk/console"
 )
 
 type hook struct{}
