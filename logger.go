@@ -141,7 +141,7 @@ func (log *Logger) doPrint(level Level, color Color, ln bool, format string, arg
 	}
 
 	if log.Flags&FILE != 0 {
-		file, line := caller(2)
+		file, line := caller(3)
 		entry.File = file
 		entry.Line = line
 	}
