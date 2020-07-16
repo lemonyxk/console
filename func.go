@@ -15,8 +15,6 @@ import (
 	"fmt"
 	"os"
 	"runtime"
-	"runtime/debug"
-	"strconv"
 	"strings"
 	"unsafe"
 )
@@ -39,15 +37,6 @@ func caller(deep int) (string, int) {
 	}
 
 	return file, line
-}
-
-func stack(deep int) (string, int) {
-	var list = strings.Split(string(debug.Stack()), "\n")
-	var info = strings.TrimSpace(list[deep])
-	var flInfo = strings.Split(strings.Split(info, " ")[0], ":")
-	var file, line = flInfo[0], flInfo[1]
-	var l, _ = strconv.Atoi(line)
-	return file, l
 }
 
 func isNil(i interface{}) bool {
