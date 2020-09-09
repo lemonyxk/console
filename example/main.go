@@ -12,6 +12,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 
 	"github.com/lemoyxk/console"
@@ -26,10 +27,18 @@ func (h *hook) Fire(entry *console.Entry) {
 
 func main() {
 
+	console.Reset.Println("1", "2", "3")
+	console.BgBlue.Println("1", "2", "3")
+	console.BgBlue.Printf("%s-%s-%s\n", "1", "2", "3")
+	console.BgBlue.Printf("%s-%s-%s\n", "1", "2", "3")
+	console.BgBlue.Printf("%s-%s-%s\n", "1", "2", "3")
+	fmt.Println("1", "2", "3")
 	var a = &hook{}
 	console.SetHook(a)
+	console.SetFlags(console.LEVEL)
 	console.Info("hello")
-	console.SetColor(false)
 	console.SetFormatter(console.NewJsonFormatter())
-	console.Info("hello")
+	console.Warning("hello")
+
+	console.FgHiGreen.Info("hello", "world")
 }

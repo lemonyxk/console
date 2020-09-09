@@ -22,10 +22,10 @@ const (
 )
 
 type Entry struct {
-	Level  Level
-	File   string
-	Line   int
-	Time   time.Time
-	Format string
-	Args   []interface{}
+	Level  Level         `json:"level,omitempty"`
+	File   string        `json:"file,omitempty"`
+	Line   int           `json:"line,omitempty"`
+	Time   time.Time     `json:"time,omitempty"`
+	Format string        `json:"format"`
+	Args   []interface{} `json:"args"`
 }

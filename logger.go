@@ -23,117 +23,132 @@ const (
 )
 
 func NewLogger() *Logger {
-	return &Logger{Formatter: NewTextFormatter(), Flags: LEVEL | TIME | FILE, Color: true}
+	return &Logger{
+		Formatter:    NewTextFormatter(),
+		Flags:        LEVEL | TIME | FILE,
+		InfoColor:    Bold,
+		WarningColor: FgYellow,
+		DebugColor:   FgGreen,
+		ErrorColor:   FgRed,
+		DisableColor: false,
+	}
 }
 
 type Logger struct {
-	Hook      Hook
-	Formatter Formatter
-	Flags     int
-	Color     bool
+	Hook         Hook
+	Formatter    Formatter
+	Flags        int
+	InfoColor    Color
+	WarningColor Color
+	DebugColor   Color
+	ErrorColor   Color
+	DisableColor bool
 }
 
-func (log *Logger) SetHook(hook Hook) {
-	log.Hook = hook
+func (log *Logger) GetLevelStringf(level Level, format string, args ...interface{}) string {
+	if log.Flags&LEVEL == 0 {
+		level = ""
+	}
+	return log.Sprintf(level, format, args...)
 }
 
-func (log *Logger) SetColor(flag bool) {
-	log.Color = flag
-}
-
-func (log *Logger) SetFormatter(formatter Formatter) {
-	log.Formatter = formatter
-}
-
-func (log *Logger) SetFlags(flags int) {
-	log.Flags = flags
+func (log *Logger) GetLevelStringln(level Level, format string, args ...interface{}) string {
+	if log.Flags&LEVEL == 0 {
+		level = ""
+	}
+	var msg = joinInterface(args, " ")
+	return log.Sprintf(level, "%s", msg)
 }
 
 func (log *Logger) Errorf(format string, args ...interface{}) {
-	var level Level
-	var color Color
-	if log.Flags&LEVEL != 0 {
-		level = ERR
-		color = FgRed
+	var str = log.GetLevelStringf(ERR, format, args...)
+
+	if log.DisableColor {
+		fmt.Printf("%s", str)
+		return
 	}
-	log.doPrint(level, color, false, format, args...)
+
+	log.ErrorColor.Printf("%s", str)
 }
 
 func (log *Logger) Warningf(format string, args ...interface{}) {
-	var level Level
-	var color Color
-	if log.Flags&LEVEL != 0 {
-		level = WAR
-		color = FgYellow
+	var str = log.GetLevelStringf(WAR, format, args...)
+
+	if log.DisableColor {
+		fmt.Printf("%s", str)
+		return
 	}
-	log.doPrint(level, color, false, format, args...)
+
+	log.WarningColor.Printf("%s", str)
 }
 
 func (log *Logger) Infof(format string, args ...interface{}) {
-	var level Level
-	var color Color
-	if log.Flags&LEVEL != 0 {
-		level = INF
-		color = Bold
+	var str = log.GetLevelStringf(INF, format, args...)
+
+	if log.DisableColor {
+		fmt.Printf("%s", str)
+		return
 	}
-	log.doPrint(level, color, false, format, args...)
+
+	log.InfoColor.Printf("%s", str)
 }
 
 func (log *Logger) Debugf(format string, args ...interface{}) {
-	var level Level
-	var color Color
-	if log.Flags&LEVEL != 0 {
-		level = DEB
-		color = FgBlue
+	var str = log.GetLevelStringf(DEB, format, args...)
+
+	if log.DisableColor {
+		fmt.Printf("%s", str)
+		return
 	}
-	log.doPrint(level, color, false, format, args...)
+
+	log.DebugColor.Printf("%s", str)
 }
 
 func (log *Logger) Error(args ...interface{}) {
-	var level Level
-	var color Color
-	if log.Flags&LEVEL != 0 {
-		level = ERR
-		color = FgRed
+	var str = log.GetLevelStringln(ERR, "%s", args...)
+
+	if log.DisableColor {
+		fmt.Printf("%s\n", str)
+		return
 	}
-	var msg = joinInterface(args, " ")
-	log.doPrint(level, color, true, "%s", msg)
+
+	log.ErrorColor.Printf("%s\n", str)
 }
 
 func (log *Logger) Warning(args ...interface{}) {
-	var level Level
-	var color Color
-	if log.Flags&LEVEL != 0 {
-		level = WAR
-		color = FgYellow
+	var str = log.GetLevelStringln(WAR, "%s", args...)
+
+	if log.DisableColor {
+		fmt.Printf("%s\n", str)
+		return
 	}
-	var msg = joinInterface(args, " ")
-	log.doPrint(level, color, true, "%s", msg)
+
+	log.WarningColor.Printf("%s\n", str)
 }
 
 func (log *Logger) Info(args ...interface{}) {
-	var level Level
-	var color Color
-	if log.Flags&LEVEL != 0 {
-		level = INF
-		color = Bold
+	var str = log.GetLevelStringln(INF, "%s", args...)
+
+	if log.DisableColor {
+		fmt.Printf("%s\n", str)
+		return
 	}
-	var msg = joinInterface(args, " ")
-	log.doPrint(level, color, true, "%s", msg)
+
+	log.InfoColor.Printf("%s\n", str)
 }
 
 func (log *Logger) Debug(args ...interface{}) {
-	var level Level
-	var color Color
-	if log.Flags&LEVEL != 0 {
-		level = DEB
-		color = FgBlue
+	var str = log.GetLevelStringln(DEB, "%s", args...)
+
+	if log.DisableColor {
+		fmt.Printf("%s\n", str)
+		return
 	}
-	var msg = joinInterface(args, " ")
-	log.doPrint(level, color, true, "%s", msg)
+
+	log.DebugColor.Printf("%s\n", str)
 }
 
-func (log *Logger) doPrint(level Level, color Color, ln bool, format string, args ...interface{}) {
+func (log *Logger) Sprintf(level Level, format string, args ...interface{}) string {
 	var entry = &Entry{Level: level}
 
 	if log.Flags&TIME != 0 {
@@ -156,21 +171,9 @@ func (log *Logger) doPrint(level Level, color Color, ln bool, format string, arg
 		str = log.Formatter.Format(entry)
 	}
 
-	if !log.Color {
-		if ln {
-			fmt.Printf("%s\n", str)
-		} else {
-			fmt.Printf("%s", str)
-		}
-	} else {
-		if ln {
-			color.Printf("%s\n", str)
-		} else {
-			color.Printf("%s", str)
-		}
-	}
-
 	if log.Hook != nil {
 		log.Hook.Fire(entry)
 	}
+
+	return str
 }

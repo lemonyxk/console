@@ -19,16 +19,28 @@ func SetFlags(flags int) {
 	handlerLogger.Flags = flags
 }
 
-func SetColor(flag bool) {
-	handlerLogger.Color = flag
-}
-
 func SetHook(hook Hook) {
 	handlerLogger.Hook = hook
 }
 
-func Exit(v interface{}) {
-	handlerLogger.Errorf("%v\n", v)
+func SetInfoColor(color Color) {
+	handlerLogger.InfoColor = color
+}
+
+func SetWarningColor(color Color) {
+	handlerLogger.WarningColor = color
+}
+
+func SetDebugColor(color Color) {
+	handlerLogger.DebugColor = color
+}
+
+func SetErrorColor(color Color) {
+	handlerLogger.ErrorColor = color
+}
+
+func Exit(v ...interface{}) {
+	handlerLogger.Info(v...)
 	os.Exit(0)
 }
 

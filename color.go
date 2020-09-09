@@ -12,6 +12,8 @@ package console
 
 import (
 	"fmt"
+
+	"github.com/jedib0t/go-pretty/text"
 )
 
 type Color int
@@ -79,9 +81,102 @@ const (
 )
 
 func (c Color) Println(v ...interface{}) {
-	fmt.Printf("\x1b[%dm%s\x1b[0m \r", c, fmt.Sprintln(v...))
+	var format = ""
+	for i := 0; i < len(v); i++ {
+		format += "%v "
+	}
+	format = format[:len(format)-1]
+	fmt.Printf("%s\n", text.Color(c).Sprintf(format, v...))
 }
 
 func (c Color) Printf(format string, v ...interface{}) {
-	fmt.Printf("\x1b[%dm%s\x1b[0m \r", c, fmt.Sprintf(format, v...))
+	fmt.Printf("%s", text.Color(c).Sprintf(format, v...))
+}
+
+func (c Color) Info(v ...interface{}) {
+	var str = handlerLogger.GetLevelStringln(INF, "%s", v...)
+
+	if handlerLogger.DisableColor {
+		fmt.Printf("%s\n", str)
+		return
+	}
+
+	c.Printf("%s\n", str)
+}
+
+func (c Color) Debug(v ...interface{}) {
+	var str = handlerLogger.GetLevelStringln(DEB, "%s", v...)
+
+	if handlerLogger.DisableColor {
+		fmt.Printf("%s\n", str)
+		return
+	}
+
+	c.Printf("%s\n", str)
+}
+
+func (c Color) Warning(v ...interface{}) {
+	var str = handlerLogger.GetLevelStringln(WAR, "%s", v...)
+
+	if handlerLogger.DisableColor {
+		fmt.Printf("%s\n", str)
+		return
+	}
+
+	c.Printf("%s\n", str)
+}
+
+func (c Color) Error(v ...interface{}) {
+	var str = handlerLogger.GetLevelStringln(ERR, "%s", v...)
+
+	if handlerLogger.DisableColor {
+		fmt.Printf("%s\n", str)
+		return
+	}
+
+	c.Printf("%s\n", str)
+}
+
+func (c Color) Infof(format string, v ...interface{}) {
+	var str = handlerLogger.GetLevelStringf(INF, "%s", v...)
+
+	if handlerLogger.DisableColor {
+		fmt.Printf("%s", str)
+		return
+	}
+
+	c.Printf("%s", str)
+}
+
+func (c Color) Warningf(format string, v ...interface{}) {
+	var str = handlerLogger.GetLevelStringf(WAR, "%s", v...)
+
+	if handlerLogger.DisableColor {
+		fmt.Printf("%s", str)
+		return
+	}
+
+	c.Printf("%s", str)
+}
+
+func (c Color) Debugf(format string, v ...interface{}) {
+	var str = handlerLogger.GetLevelStringf(DEB, "%s", v...)
+
+	if handlerLogger.DisableColor {
+		fmt.Printf("%s", str)
+		return
+	}
+
+	c.Printf("%s", str)
+}
+
+func (c Color) Errorf(format string, v ...interface{}) {
+	var str = handlerLogger.GetLevelStringf(ERR, "%s", v...)
+
+	if handlerLogger.DisableColor {
+		fmt.Printf("%s", str)
+		return
+	}
+
+	c.Printf("%s", str)
 }
