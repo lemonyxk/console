@@ -156,7 +156,7 @@ func (log *Logger) Sprintf(level Level, format string, args ...interface{}) stri
 	}
 
 	if log.Flags&FILE != 0 {
-		file, line := caller(3)
+		file, line := caller(4)
 		entry.File = file
 		entry.Line = line
 	}
