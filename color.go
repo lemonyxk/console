@@ -138,7 +138,7 @@ func (c Color) Error(v ...interface{}) {
 }
 
 func (c Color) Infof(format string, v ...interface{}) {
-	var str = handlerLogger.GetLevelStringf(INF, "%s", v...)
+	var str = handlerLogger.GetLevelStringf(INF, format, v...)
 
 	if handlerLogger.DisableColor {
 		fmt.Printf("%s", str)
@@ -149,7 +149,7 @@ func (c Color) Infof(format string, v ...interface{}) {
 }
 
 func (c Color) Warningf(format string, v ...interface{}) {
-	var str = handlerLogger.GetLevelStringf(WAR, "%s", v...)
+	var str = handlerLogger.GetLevelStringf(WAR, format, v...)
 
 	if handlerLogger.DisableColor {
 		fmt.Printf("%s", str)
@@ -160,7 +160,7 @@ func (c Color) Warningf(format string, v ...interface{}) {
 }
 
 func (c Color) Debugf(format string, v ...interface{}) {
-	var str = handlerLogger.GetLevelStringf(DEB, "%s", v...)
+	var str = handlerLogger.GetLevelStringf(DEB, format, v...)
 
 	if handlerLogger.DisableColor {
 		fmt.Printf("%s", str)
@@ -171,7 +171,7 @@ func (c Color) Debugf(format string, v ...interface{}) {
 }
 
 func (c Color) Errorf(format string, v ...interface{}) {
-	var str = handlerLogger.GetLevelStringf(ERR, "%s", v...)
+	var str = handlerLogger.GetLevelStringf(ERR, format, v...)
 
 	if handlerLogger.DisableColor {
 		fmt.Printf("%s", str)
