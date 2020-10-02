@@ -12,8 +12,10 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
+	"net/http"
 
 	"github.com/lemoyxk/console"
 )
@@ -41,4 +43,11 @@ func main() {
 	console.Warning("hello")
 
 	console.FgHiGreen.Info("hello", "world")
+
+	console.Pretty.Dump(errors.New("hello error!"))
+	console.Pretty.Dump(&http.Server{})
+	type b struct {
+		a interface{}
+	}
+	console.Pretty.Dump(b{a: true}, b{a: false})
 }

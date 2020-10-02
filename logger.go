@@ -64,7 +64,7 @@ func (log *Logger) Errorf(format string, args ...interface{}) {
 	var str = log.GetLevelStringf(ERR, format, args...)
 
 	if log.DisableColor {
-		fmt.Printf("%s", str)
+		write(fmt.Sprintf("%s", str))
 		return
 	}
 
@@ -75,7 +75,7 @@ func (log *Logger) Warningf(format string, args ...interface{}) {
 	var str = log.GetLevelStringf(WAR, format, args...)
 
 	if log.DisableColor {
-		fmt.Printf("%s", str)
+		write(fmt.Sprintf("%s", str))
 		return
 	}
 
@@ -86,7 +86,7 @@ func (log *Logger) Infof(format string, args ...interface{}) {
 	var str = log.GetLevelStringf(INF, format, args...)
 
 	if log.DisableColor {
-		fmt.Printf("%s", str)
+		write(fmt.Sprintf("%s", str))
 		return
 	}
 
@@ -97,7 +97,7 @@ func (log *Logger) Debugf(format string, args ...interface{}) {
 	var str = log.GetLevelStringf(DEB, format, args...)
 
 	if log.DisableColor {
-		fmt.Printf("%s", str)
+		write(fmt.Sprintf("%s", str))
 		return
 	}
 
@@ -108,7 +108,7 @@ func (log *Logger) Error(args ...interface{}) {
 	var str = log.GetLevelStringln(ERR, "%s", args...)
 
 	if log.DisableColor {
-		fmt.Printf("%s\n", str)
+		write(fmt.Sprintf("%s\n", str))
 		return
 	}
 
@@ -119,7 +119,7 @@ func (log *Logger) Warning(args ...interface{}) {
 	var str = log.GetLevelStringln(WAR, "%s", args...)
 
 	if log.DisableColor {
-		fmt.Printf("%s\n", str)
+		write(fmt.Sprintf("%s\n", str))
 		return
 	}
 
@@ -130,7 +130,7 @@ func (log *Logger) Info(args ...interface{}) {
 	var str = log.GetLevelStringln(INF, "%s", args...)
 
 	if log.DisableColor {
-		fmt.Printf("%s\n", str)
+		write(fmt.Sprintf("%s\n", str))
 		return
 	}
 
@@ -141,7 +141,7 @@ func (log *Logger) Debug(args ...interface{}) {
 	var str = log.GetLevelStringln(DEB, "%s", args...)
 
 	if log.DisableColor {
-		fmt.Printf("%s\n", str)
+		write(fmt.Sprintf("%s\n", str))
 		return
 	}
 
