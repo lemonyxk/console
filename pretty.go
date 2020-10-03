@@ -130,14 +130,14 @@ func format(rv reflect.Value) {
 		// has Error method
 		var m = rv.MethodByName("Error")
 		if m.IsValid() && m.String() == `<func() string Value>` {
-			writeValue(Bold.Mixed(FgGreen).Sprintf("%s", `"`+m.Call(nil)[0].String()+`"`))
+			writeValue(Bold.Mixed(FgGreen).Sprint(`"` + m.Call(nil)[0].String() + `"`))
 			return
 		}
 
 		// has String method
 		m = rv.MethodByName("String")
 		if m.IsValid() && m.String() == `<func() string Value>` {
-			writeValue(Bold.Mixed(FgGreen).Sprintf("%s", `"`+m.Call(nil)[0].String()+`"`))
+			writeValue(Bold.Mixed(FgGreen).Sprint(`"` + m.Call(nil)[0].String() + `"`))
 			return
 		}
 
@@ -147,15 +147,15 @@ func format(rv reflect.Value) {
 
 	// SIMPLE TYPE
 	case reflect.Bool:
-		writeValue(Bold.Mixed(FgCyan).Sprintf("%s", simple(rv)))
+		writeValue(Bold.Mixed(FgCyan).Sprint(simple(rv)))
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
 		reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64,
 		reflect.Uintptr, reflect.Complex64, reflect.Complex128:
-		writeValue(Bold.Mixed(FgBlue).Sprintf("%s", simple(rv)))
+		writeValue(Bold.Mixed(FgBlue).Sprint(simple(rv)))
 	case reflect.Float32, reflect.Float64:
-		writeValue(Bold.Mixed(FgBlue).Sprintf("%s", simple(rv)))
+		writeValue(Bold.Mixed(FgBlue).Sprint(simple(rv)))
 	case reflect.String:
-		writeValue(Bold.Mixed(FgGreen).Sprintf("%s", simple(rv)))
+		writeValue(Bold.Mixed(FgGreen).Sprint(simple(rv)))
 	case reflect.Func:
 		printFunc(rv)
 	case reflect.UnsafePointer:
@@ -163,7 +163,7 @@ func format(rv reflect.Value) {
 	case reflect.Chan:
 		printChan(rv)
 	case reflect.Invalid:
-		writeValue(Bold.Mixed(FgHiRed).Sprintf("%s", "nil"))
+		writeValue(Bold.Mixed(FgHiRed).Sprint("nil"))
 
 	// COMPLEX TYPE
 	case reflect.Map:
@@ -185,20 +185,20 @@ func printFunc(v reflect.Value) {
 	if !v.IsNil() {
 		writeValue(Bold.Mixed(FgYellow).Sprintf("%s {...}", typeString(v)))
 	} else {
-		writeValue(Bold.Mixed(FgYellow).Sprintf("(%s {...})(nil)", typeString(v)))
+		writeValue(Bold.Mixed(FgYellow).Sprintf("(%s {...}) (nil)", typeString(v)))
 	}
 }
 
 func printChan(v reflect.Value) {
 	if !v.IsNil() {
-		writeValue(Bold.Mixed(FgMagenta).Sprintf("%s(%s)", typeString(v), addrString(v)))
+		writeValue(Bold.Mixed(FgMagenta).Sprintf("(%s) (%s)", typeString(v), addrString(v)))
 	} else {
-		writeValue(Bold.Mixed(FgMagenta).Sprintf("(%s)(nil)", typeString(v)))
+		writeValue(Bold.Mixed(FgMagenta).Sprintf("(%s) (nil)", typeString(v)))
 	}
 }
 
 func printUnsafePointer(v reflect.Value) {
-	writeValue(Bold.Sprintf("%s(%s)", typeString(v), addrString(v)))
+	writeValue(Bold.Sprintf("(%s) (%s)", typeString(v), addrString(v)))
 }
 
 func printMap(v reflect.Value) {
@@ -211,7 +211,7 @@ func printMap(v reflect.Value) {
 		if !v.IsNil() {
 			writeValue(Bold.Sprintf("%s{}", typeString(v)))
 		} else {
-			writeValue(Bold.Sprintf("(%s)(nil)", typeString(v)))
+			writeValue(Bold.Sprintf("(%s) (nil)", typeString(v)))
 		}
 		deep = d
 		return
@@ -225,16 +225,16 @@ func printMap(v reflect.Value) {
 
 	visited[v.Pointer()] = true
 
-	writeStart(Bold.Mixed(FgRed).Sprintf("%s", typeString(v)) + "{")
+	writeStart(Bold.Mixed(FgRed).Sprint(typeString(v)) + "{")
 
 	keys := v.MapKeys()
 	for i := 0; i < v.Len(); i++ {
 		value := v.MapIndex(keys[i])
-		writeKey(Bold.Sprintf("%s", simple(keys[i])+":"+" "))
+		writeKey(Bold.Sprint(simple(keys[i]) + ":" + " "))
 		format(value)
 	}
 
-	writeEnd(d, Bold.Sprintf("%s", "}"))
+	writeEnd(d, Bold.Sprint("}"))
 
 	deep = d
 }
@@ -250,7 +250,7 @@ func printSlice(v reflect.Value) {
 		if !v.IsNil() {
 			writeValue(Bold.Sprintf("%s{}", typeString(v)))
 		} else {
-			writeValue(Bold.Sprintf("(%s)(nil)", typeString(v)))
+			writeValue(Bold.Sprintf("(%s) (nil)", typeString(v)))
 		}
 		deep = d
 		return
@@ -266,7 +266,7 @@ func printSlice(v reflect.Value) {
 		visited[v.Pointer()] = true
 	}
 
-	writeStart(Bold.Mixed(FgRed).Sprintf("%s", typeString(v)) + "{")
+	writeStart(Bold.Mixed(FgRed).Sprint(typeString(v)) + "{")
 
 	for i := 0; i < v.Len(); i++ {
 		value := v.Index(i)
@@ -274,7 +274,7 @@ func printSlice(v reflect.Value) {
 		format(value)
 	}
 
-	writeEnd(d, Bold.Sprintf("%s", "}"))
+	writeEnd(d, Bold.Sprint("}"))
 
 	deep = d
 }
@@ -285,7 +285,7 @@ func printStruct(v reflect.Value) {
 	var d = deep
 	deep++
 
-	writeStart(Bold.Mixed(FgRed).Sprintf("%s", typeString(v)) + "{")
+	writeStart(Bold.Mixed(FgRed).Sprint(typeString(v)) + "{")
 
 	for i := 0; i < v.NumField(); i++ {
 		field := v.Type().Field(i).Name
@@ -295,18 +295,18 @@ func printStruct(v reflect.Value) {
 		// config private & public
 		if value.CanInterface() {
 			if public {
-				writeKey(Bold.Sprintf("%s", field+":"+" "))
+				writeKey(Bold.Sprint(field + ":" + " "))
 				format(value)
 			}
 		} else {
 			if private {
-				writeKey(Bold.Sprintf("%s", field+":"+" "))
+				writeKey(Bold.Sprint(field + ":" + " "))
 				format(value)
 			}
 		}
 	}
 
-	writeEnd(d, Bold.Sprintf("%s", "}"))
+	writeEnd(d, Bold.Sprint("}"))
 
 	deep = d
 }
@@ -323,10 +323,10 @@ func printPtr(v reflect.Value) {
 	}
 
 	if v.Elem().IsValid() {
-		writeString(Bold.Sprintf("%s", "&"))
+		writeString(Bold.Sprint("&"))
 		format(v.Elem())
 	} else {
-		writeValue(Bold.Sprintf("(%s)(nil)", typeString(v)))
+		writeValue(Bold.Sprintf("(%s) (nil)", typeString(v)))
 	}
 }
 

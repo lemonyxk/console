@@ -77,5 +77,9 @@ func (f *jsonFormatter) Format(entry *Entry) string {
 		panic(err)
 	}
 
+	if len(entry.Format) > 0 && entry.Format[len(entry.Format)-1] == '\n' {
+		return string(bts) + "\n"
+	}
+
 	return string(bts)
 }

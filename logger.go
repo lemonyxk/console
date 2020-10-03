@@ -52,100 +52,100 @@ func (log *Logger) GetLevelStringf(level Level, format string, args ...interface
 	return log.Sprintf(level, format, args...)
 }
 
-func (log *Logger) GetLevelStringln(level Level, format string, args ...interface{}) string {
+func (log *Logger) GetLevelStringln(level Level, args ...interface{}) string {
 	if log.Flags&LEVEL == 0 {
 		level = ""
 	}
 	var msg = joinInterface(args, " ")
-	return log.Sprintf(level, "%s", msg)
+	return log.Sprintf(level, "%s\n", msg)
 }
 
 func (log *Logger) Errorf(format string, args ...interface{}) {
 	var str = log.GetLevelStringf(ERR, format, args...)
 
 	if log.DisableColor {
-		write(fmt.Sprintf("%s", str))
+		write(str)
 		return
 	}
 
-	log.ErrorColor.Printf("%s", str)
+	log.ErrorColor.Print(str)
 }
 
 func (log *Logger) Warningf(format string, args ...interface{}) {
 	var str = log.GetLevelStringf(WAR, format, args...)
 
 	if log.DisableColor {
-		write(fmt.Sprintf("%s", str))
+		write(str)
 		return
 	}
 
-	log.WarningColor.Printf("%s", str)
+	log.WarningColor.Print(str)
 }
 
 func (log *Logger) Infof(format string, args ...interface{}) {
 	var str = log.GetLevelStringf(INF, format, args...)
 
 	if log.DisableColor {
-		write(fmt.Sprintf("%s", str))
+		write(str)
 		return
 	}
 
-	log.InfoColor.Printf("%s", str)
+	log.InfoColor.Print(str)
 }
 
 func (log *Logger) Debugf(format string, args ...interface{}) {
 	var str = log.GetLevelStringf(DEB, format, args...)
 
 	if log.DisableColor {
-		write(fmt.Sprintf("%s", str))
+		write(str)
 		return
 	}
 
-	log.DebugColor.Printf("%s", str)
+	log.DebugColor.Print(str)
 }
 
 func (log *Logger) Error(args ...interface{}) {
-	var str = log.GetLevelStringln(ERR, "%s", args...)
+	var str = log.GetLevelStringln(ERR, args...)
 
 	if log.DisableColor {
-		write(fmt.Sprintf("%s\n", str))
+		write(str)
 		return
 	}
 
-	log.ErrorColor.Printf("%s\n", str)
+	log.ErrorColor.Print(str)
 }
 
 func (log *Logger) Warning(args ...interface{}) {
-	var str = log.GetLevelStringln(WAR, "%s", args...)
+	var str = log.GetLevelStringln(WAR, args...)
 
 	if log.DisableColor {
-		write(fmt.Sprintf("%s\n", str))
+		write(str)
 		return
 	}
 
-	log.WarningColor.Printf("%s\n", str)
+	log.WarningColor.Print(str)
 }
 
 func (log *Logger) Info(args ...interface{}) {
-	var str = log.GetLevelStringln(INF, "%s", args...)
+	var str = log.GetLevelStringln(INF, args...)
 
 	if log.DisableColor {
-		write(fmt.Sprintf("%s\n", str))
+		write(str)
 		return
 	}
 
-	log.InfoColor.Printf("%s\n", str)
+	log.InfoColor.Print(str)
 }
 
 func (log *Logger) Debug(args ...interface{}) {
-	var str = log.GetLevelStringln(DEB, "%s", args...)
+	var str = log.GetLevelStringln(DEB, args...)
 
 	if log.DisableColor {
-		write(fmt.Sprintf("%s\n", str))
+		write(str)
 		return
 	}
 
-	log.DebugColor.Printf("%s\n", str)
+	log.DebugColor.Print(str)
 }
 
 func (log *Logger) Sprintf(level Level, format string, args ...interface{}) string {

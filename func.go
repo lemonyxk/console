@@ -58,7 +58,7 @@ func joinInterface(v []interface{}, sep string) string {
 		case string:
 			buf.WriteString(v[i].(string))
 		default:
-			buf.WriteString(fmt.Sprintf("%v", v[i]))
+			buf.WriteString(fmt.Sprint(v[i]))
 		}
 		if i != len(v)-1 {
 			buf.WriteString(sep)

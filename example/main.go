@@ -37,10 +37,10 @@ func main() {
 	fmt.Println("1", "2", "3")
 	var a = &hook{}
 	console.SetHook(a)
-	console.SetFlags(console.LEVEL)
+	// console.SetFlags(console.LEVEL)
 	console.Info("hello")
 	console.SetFormatter(console.NewJsonFormatter())
-	console.Warning("hello")
+	console.Warningf("%s???\n", "hello")
 
 	console.FgHiGreen.Info("hello", "world")
 

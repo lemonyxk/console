@@ -11,8 +11,6 @@
 package console
 
 import (
-	"fmt"
-
 	"github.com/jedib0t/go-pretty/text"
 )
 
@@ -83,17 +81,12 @@ const (
 type Colors []Color
 
 func (c Colors) Println(v ...interface{}) {
-	var format = ""
-	for i := 0; i < len(v); i++ {
-		format += "%v "
-	}
-	format = format[:len(format)-1]
+	var str = joinInterface(v, " ")
 	var colors = text.Colors{}
 	for i := 0; i < len(c); i++ {
 		colors = append(colors, text.Color(c[i]))
 	}
-	write(fmt.Sprintf("%s\n", colors.Sprintf(format, v...)))
-
+	write(colors.Sprint(str + "\n"))
 }
 
 func (c Colors) Sprintf(format string, v ...interface{}) string {
@@ -101,7 +94,23 @@ func (c Colors) Sprintf(format string, v ...interface{}) string {
 	for i := 0; i < len(c); i++ {
 		colors = append(colors, text.Color(c[i]))
 	}
-	return fmt.Sprintf("%s", colors.Sprintf(format, v...))
+	return colors.Sprintf(format, v...)
+}
+
+func (c Colors) Sprint(v ...interface{}) string {
+	var colors = text.Colors{}
+	for i := 0; i < len(c); i++ {
+		colors = append(colors, text.Color(c[i]))
+	}
+	return colors.Sprint(v...)
+}
+
+func (c Colors) Print(v ...interface{}) {
+	var colors = text.Colors{}
+	for i := 0; i < len(c); i++ {
+		colors = append(colors, text.Color(c[i]))
+	}
+	write(colors.Sprint(v...))
 }
 
 func (c Colors) Printf(format string, v ...interface{}) {
@@ -109,7 +118,7 @@ func (c Colors) Printf(format string, v ...interface{}) {
 	for i := 0; i < len(c); i++ {
 		colors = append(colors, text.Color(c[i]))
 	}
-	write(fmt.Sprintf("%s", colors.Sprintf(format, v...)))
+	write(colors.Sprintf(format, v...))
 }
 
 func (c Color) Mixed(color ...Color) Colors {
@@ -122,107 +131,126 @@ func (c Color) Mixed(color ...Color) Colors {
 }
 
 func (c Color) Println(v ...interface{}) {
-	var format = ""
-	for i := 0; i < len(v); i++ {
-		format += "%v "
-	}
-	format = format[:len(format)-1]
-	write(fmt.Sprintf("%s\n", text.Color(c).Sprintf(format, v...)))
-
+	var str = joinInterface(v, " ")
+	write(text.Color(c).Sprint(str + "\n"))
 }
 
 func (c Color) Sprintf(format string, v ...interface{}) string {
-	return fmt.Sprintf("%s", text.Color(c).Sprintf(format, v...))
+	return text.Color(c).Sprintf(format, v...)
+}
+
+func (c Color) Sprint(v ...interface{}) string {
+	return text.Color(c).Sprint(v...)
+}
+
+func (c Color) Print(v ...interface{}) {
+	write(text.Color(c).Sprint(v...))
 }
 
 func (c Color) Printf(format string, v ...interface{}) {
-	write(fmt.Sprintf("%s", text.Color(c).Sprintf(format, v...)))
+	write(text.Color(c).Sprintf(format, v...))
 }
 
 func (c Color) Info(v ...interface{}) {
-	var str = handlerLogger.GetLevelStringln(INF, "%s", v...)
+	func() {
+		var str = handlerLogger.GetLevelStringln(INF, v...)
 
-	if handlerLogger.DisableColor {
-		write(fmt.Sprintf("%s\n", str))
-		return
-	}
+		if handlerLogger.DisableColor {
+			write(str)
+			return
+		}
 
-	c.Printf("%s\n", str)
+		c.Print(str)
+	}()
 }
 
 func (c Color) Debug(v ...interface{}) {
-	var str = handlerLogger.GetLevelStringln(DEB, "%s", v...)
+	func() {
+		var str = handlerLogger.GetLevelStringln(DEB, v...)
 
-	if handlerLogger.DisableColor {
-		write(fmt.Sprintf("%s\n", str))
-		return
-	}
+		if handlerLogger.DisableColor {
+			write(str)
+			return
+		}
 
-	c.Printf("%s\n", str)
+		c.Print(str)
+	}()
 }
 
 func (c Color) Warning(v ...interface{}) {
-	var str = handlerLogger.GetLevelStringln(WAR, "%s", v...)
+	func() {
+		var str = handlerLogger.GetLevelStringln(WAR, v...)
 
-	if handlerLogger.DisableColor {
-		write(fmt.Sprintf("%s\n", str))
-		return
-	}
+		if handlerLogger.DisableColor {
+			write(str)
+			return
+		}
 
-	c.Printf("%s\n", str)
+		c.Print(str)
+	}()
 }
 
 func (c Color) Error(v ...interface{}) {
-	var str = handlerLogger.GetLevelStringln(ERR, "%s", v...)
+	func() {
+		var str = handlerLogger.GetLevelStringln(ERR, v...)
 
-	if handlerLogger.DisableColor {
-		write(fmt.Sprintf("%s\n", str))
-		return
-	}
+		if handlerLogger.DisableColor {
+			write(str)
+			return
+		}
 
-	c.Printf("%s\n", str)
+		c.Print(str)
+	}()
 }
 
 func (c Color) Infof(format string, v ...interface{}) {
-	var str = handlerLogger.GetLevelStringf(INF, format, v...)
+	func() {
+		var str = handlerLogger.GetLevelStringf(INF, format, v...)
 
-	if handlerLogger.DisableColor {
-		write(fmt.Sprintf("%s", str))
-		return
-	}
+		if handlerLogger.DisableColor {
+			write(str)
+			return
+		}
 
-	c.Printf("%s", str)
+		c.Print(str)
+	}()
 }
 
 func (c Color) Warningf(format string, v ...interface{}) {
-	var str = handlerLogger.GetLevelStringf(WAR, format, v...)
+	func() {
+		var str = handlerLogger.GetLevelStringf(WAR, format, v...)
 
-	if handlerLogger.DisableColor {
-		write(fmt.Sprintf("%s", str))
-		return
-	}
+		if handlerLogger.DisableColor {
+			write(str)
+			return
+		}
 
-	c.Printf("%s", str)
+		c.Print(str)
+	}()
 }
 
 func (c Color) Debugf(format string, v ...interface{}) {
-	var str = handlerLogger.GetLevelStringf(DEB, format, v...)
+	func() {
+		var str = handlerLogger.GetLevelStringf(DEB, format, v...)
 
-	if handlerLogger.DisableColor {
-		write(fmt.Sprintf("%s", str))
-		return
-	}
+		if handlerLogger.DisableColor {
+			write(str)
+			return
+		}
 
-	c.Printf("%s", str)
+		c.Print(str)
+	}()
 }
 
 func (c Color) Errorf(format string, v ...interface{}) {
-	var str = handlerLogger.GetLevelStringf(ERR, format, v...)
+	func() {
+		var str = handlerLogger.GetLevelStringf(ERR, format, v...)
 
-	if handlerLogger.DisableColor {
-		write(fmt.Sprintf("%s", str))
-		return
-	}
+		if handlerLogger.DisableColor {
+			write(str)
+			return
+		}
 
-	c.Printf("%s", str)
+		c.Print(str)
+	}()
 }
