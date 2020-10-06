@@ -21,7 +21,7 @@ import (
 var mux sync.Mutex
 
 var visited = make(map[uintptr]bool)
-var tw = tabwriter.NewWriter(writer, 0, 0, tabWidth, ' ', 0)
+var tw = tabwriter.NewWriter(writer, 2, 0, 1, ' ', 0)
 
 var deep = 0
 var isComplex = false
@@ -64,14 +64,14 @@ func (p pretty) Private(v ...interface{}) {
 	mux.Unlock()
 }
 
-func (p pretty) Details(v ...interface{}) {
-	mux.Lock()
-	details = true
-	for i := 0; i < len(v); i++ {
-		dump(reflect.ValueOf(v[i]))
-	}
-	mux.Unlock()
-}
+// func (p pretty) Details(v ...interface{}) {
+// 	mux.Lock()
+// 	details = true
+// 	for i := 0; i < len(v); i++ {
+// 		dump(reflect.ValueOf(v[i]))
+// 	}
+// 	mux.Unlock()
+// }
 
 func dump(v reflect.Value) {
 	format(v)
@@ -102,10 +102,12 @@ func writeValue(s string) {
 }
 
 func writeKey(s string) {
-	panicIfError(fmt.Fprintf(tw, "%s", strings.Repeat(" ", deep*tabWidth)+s))
+	panicIfError(fmt.Fprintf(tw, "%s\t", strings.Repeat(" ", deep*tabWidth)+s))
 }
 
 func writeStart(s string) {
+	_ = tw.Flush()
+	tw = tabwriter.NewWriter(writer, 2, 0, 1, ' ', 0)
 	panicIfError(fmt.Fprintf(tw, "%s\n", s))
 }
 
@@ -120,28 +122,32 @@ func format(rv reflect.Value) {
 
 	// if is error or Stringer
 	// config details
-	if !details && rv.IsValid() {
-
-		if rv.Kind() == reflect.Interface {
-			format(rv.Elem())
-			return
-		}
-
-		// has Error method
-		var m = rv.MethodByName("Error")
-		if m.IsValid() && m.String() == `<func() string Value>` {
-			writeValue(Bold.Mixed(FgGreen).Sprint(`"` + m.Call(nil)[0].String() + `"`))
-			return
-		}
-
-		// has String method
-		m = rv.MethodByName("String")
-		if m.IsValid() && m.String() == `<func() string Value>` {
-			writeValue(Bold.Mixed(FgGreen).Sprint(`"` + m.Call(nil)[0].String() + `"`))
-			return
-		}
-
-	}
+	// if !details && rv.IsValid() {
+	//
+	// 	if rv.Kind() == reflect.Interface {
+	// 		format(rv.Elem())
+	// 		return
+	// 	}
+	//
+	// 	// has Error method
+	// 	var m = rv.MethodByName("Error")
+	// 	if m.IsValid() && m.String() == `<func() string Value>` {
+	// 		if m.CanInterface() {
+	// 			writeValue(Bold.Mixed(FgGreen).Sprint(`"` + m.Call(nil)[0].String() + `"`))
+	// 			return
+	// 		}
+	// 	}
+	//
+	// 	// has String method
+	// 	m = rv.MethodByName("String")
+	// 	if m.IsValid() && m.String() == `<func() string Value>` {
+	// 		if m.CanInterface() {
+	// 			writeValue(Bold.Mixed(FgGreen).Sprint(`"` + m.Call(nil)[0].String() + `"`))
+	// 			return
+	// 		}
+	// 	}
+	//
+	// }
 
 	switch rv.Kind() {
 
