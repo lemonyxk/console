@@ -202,7 +202,6 @@ func printUnsafePointer(v reflect.Value) {
 }
 
 func printMap(v reflect.Value) {
-	isComplex = true
 
 	var d = deep
 	deep++
@@ -227,6 +226,8 @@ func printMap(v reflect.Value) {
 
 	writeStart(Bold.Mixed(FgRed).Sprint(typeString(v)) + "{")
 
+	isComplex = true
+
 	keys := v.MapKeys()
 	for i := 0; i < v.Len(); i++ {
 		value := v.MapIndex(keys[i])
@@ -240,8 +241,6 @@ func printMap(v reflect.Value) {
 }
 
 func printSlice(v reflect.Value) {
-
-	isComplex = true
 
 	var d = deep
 	deep++
@@ -266,7 +265,9 @@ func printSlice(v reflect.Value) {
 		visited[v.Pointer()] = true
 	}
 
-	writeStart(Bold.Mixed(FgRed).Sprint(typeString(v)) + "{")
+	writeStart(Bold.Mixed(FgRed).Sprint(typeString(v) + "{"))
+
+	isComplex = true
 
 	for i := 0; i < v.Len(); i++ {
 		value := v.Index(i)
@@ -280,12 +281,13 @@ func printSlice(v reflect.Value) {
 }
 
 func printStruct(v reflect.Value) {
-	isComplex = true
 
 	var d = deep
 	deep++
 
-	writeStart(Bold.Mixed(FgRed).Sprint(typeString(v)) + "{")
+	writeStart(Bold.Mixed(FgRed).Sprint(typeString(v) + "{"))
+
+	isComplex = true
 
 	for i := 0; i < v.NumField(); i++ {
 		field := v.Type().Field(i).Name
