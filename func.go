@@ -29,6 +29,11 @@ func caller(deep int) (string, int) {
 	if err != nil {
 		return file, line
 	}
+
+	if runtime.GOOS == "windows" {
+		rootPath = strings.Replace(rootPath, "\\", "/", -1)
+	}
+
 	if rootPath == "/" {
 		return file, line
 	}
