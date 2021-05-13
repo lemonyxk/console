@@ -20,6 +20,7 @@ const (
 	LEVEL = 1 << iota
 	TIME
 	FILE
+	ID
 )
 
 func NewLogger() *Logger {
@@ -43,6 +44,7 @@ type Logger struct {
 	DebugColor   Color
 	ErrorColor   Color
 	DisableColor bool
+	ID           string
 }
 
 func (log *Logger) GetLevelStringf(level Level, format string, args ...interface{}) string {
@@ -155,8 +157,13 @@ func (log *Logger) Sprintf(level Level, format string, args ...interface{}) stri
 		entry.Time = time.Now()
 	}
 
+	if log.Flags&ID != 0 {
+		entry.ID = log.ID
+	}
+
 	if log.Flags&FILE != 0 {
-		file, line := caller(4)
+		file, line := caller()
+
 		entry.File = file
 		entry.Line = line
 	}

@@ -26,6 +26,7 @@ type Entry struct {
 	File   string        `json:"file,omitempty"`
 	Line   int           `json:"line,omitempty"`
 	Time   time.Time     `json:"time,omitempty"`
+	ID     string        `json:"id,omitempty"`
 	Format string        `json:"format"`
 	Args   []interface{} `json:"args"`
 }

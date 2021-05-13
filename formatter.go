@@ -43,6 +43,10 @@ func (f *textFormatter) Format(entry *Entry) string {
 		flags = append(flags, entry.File+":"+strconv.Itoa(entry.Line))
 	}
 
+	if entry.ID != "" {
+		flags = append(flags, entry.ID)
+	}
+
 	var format = "%s " + entry.Format
 	var args = append([]interface{}{strings.Join(flags, " ")}, entry.Args...)
 
@@ -68,6 +72,10 @@ func (f *jsonFormatter) Format(entry *Entry) string {
 
 	if entry.File != "" {
 		data["file"] = entry.File + ":" + strconv.Itoa(entry.Line)
+	}
+
+	if entry.ID != "" {
+		data["id"] = entry.ID
 	}
 
 	data["msg"] = fmt.Sprintf(entry.Format, entry.Args...)

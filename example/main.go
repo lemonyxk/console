@@ -29,6 +29,11 @@ func (h *hook) Fire(entry *console.Entry) {
 
 func main() {
 
+	var con = console.NewLogger()
+	con.ID = "123456"
+
+	con.Info("hello")
+
 	console.Reset.Println("1", "2", "3")
 	console.BgBlue.Println("1", "2", "3")
 	console.BgBlue.Printf("%s-%s-%s\n", "1", "2", "3")

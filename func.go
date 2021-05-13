@@ -19,15 +19,28 @@ import (
 	"unsafe"
 )
 
-func caller(deep int) (string, int) {
-	_, file, line, ok := runtime.Caller(deep + 1)
-	if !ok {
-		return "", 0
+var rootPath, _ = os.Getwd()
+
+func caller() (string, int) {
+
+	var file, line = "", 0
+
+	// 4 for opt
+	for skip := 4; true; skip++ {
+		_, codePath, codeLine, ok := runtime.Caller(skip)
+		if !ok {
+			break
+		}
+
+		if !strings.HasPrefix(codePath, rootPath) {
+			break
+		}
+
+		file, line = codePath, codeLine
 	}
 
-	var rootPath, err = os.Getwd()
-	if err != nil {
-		return file, line
+	if file == "" || line == 0 {
+		return "", 0
 	}
 
 	if runtime.GOOS == "windows" {
