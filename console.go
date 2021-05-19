@@ -88,12 +88,12 @@ func Errorf(format string, v ...interface{}) {
 	handlerLogger.Errorf(format, v...)
 }
 
-func IfNotNil(v ...interface{}) {
-	if len(v) == 0 {
-		return
-	}
-	if isNil(v[len(v)-1]) {
-		return
-	}
-	handlerLogger.Errorf("%v\n", v[len(v)-1])
-}
+// func IfNotNil(v ...interface{}) {
+// 	if len(v) == 0 {
+// 		return
+// 	}
+// 	if isNil(v[len(v)-1]) {
+// 		return
+// 	}
+// 	handlerLogger.Errorf("%v\n", v[len(v)-1])
+// }
