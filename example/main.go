@@ -29,6 +29,8 @@ func (h *hook) Fire(entry *console.Entry) {
 
 func main() {
 
+	console.FgRed.Info("xixi")
+
 	var con = console.NewLogger()
 	con.ID = "123456"
 

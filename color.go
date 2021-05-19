@@ -152,105 +152,89 @@ func (c Color) Printf(format string, v ...interface{}) {
 }
 
 func (c Color) Info(v ...interface{}) {
-	func() {
-		var str = handlerLogger.GetLevelStringln(INF, v...)
+	var str = handlerLogger.GetLevelStringln(INF, v...)
 
-		if handlerLogger.DisableColor {
-			write(str)
-			return
-		}
+	if handlerLogger.DisableColor {
+		write(str)
+		return
+	}
 
-		c.Print(str)
-	}()
+	c.Print(str)
 }
 
 func (c Color) Debug(v ...interface{}) {
-	func() {
-		var str = handlerLogger.GetLevelStringln(DEB, v...)
+	var str = handlerLogger.GetLevelStringln(DEB, v...)
 
-		if handlerLogger.DisableColor {
-			write(str)
-			return
-		}
+	if handlerLogger.DisableColor {
+		write(str)
+		return
+	}
 
-		c.Print(str)
-	}()
+	c.Print(str)
 }
 
 func (c Color) Warning(v ...interface{}) {
-	func() {
-		var str = handlerLogger.GetLevelStringln(WAR, v...)
+	var str = handlerLogger.GetLevelStringln(WAR, v...)
 
-		if handlerLogger.DisableColor {
-			write(str)
-			return
-		}
+	if handlerLogger.DisableColor {
+		write(str)
+		return
+	}
 
-		c.Print(str)
-	}()
+	c.Print(str)
 }
 
 func (c Color) Error(v ...interface{}) {
-	func() {
-		var str = handlerLogger.GetLevelStringln(ERR, v...)
+	var str = handlerLogger.GetLevelStringln(ERR, v...)
 
-		if handlerLogger.DisableColor {
-			write(str)
-			return
-		}
+	if handlerLogger.DisableColor {
+		write(str)
+		return
+	}
 
-		c.Print(str)
-	}()
+	c.Print(str)
 }
 
 func (c Color) Infof(format string, v ...interface{}) {
-	func() {
-		var str = handlerLogger.GetLevelStringf(INF, format, v...)
+	var str = handlerLogger.GetLevelStringf(INF, format, v...)
 
-		if handlerLogger.DisableColor {
-			write(str)
-			return
-		}
+	if handlerLogger.DisableColor {
+		write(str)
+		return
+	}
 
-		c.Print(str)
-	}()
+	c.Print(str)
 }
 
 func (c Color) Warningf(format string, v ...interface{}) {
-	func() {
-		var str = handlerLogger.GetLevelStringf(WAR, format, v...)
+	var str = handlerLogger.GetLevelStringf(WAR, format, v...)
 
-		if handlerLogger.DisableColor {
-			write(str)
-			return
-		}
+	if handlerLogger.DisableColor {
+		write(str)
+		return
+	}
 
-		c.Print(str)
-	}()
+	c.Print(str)
 }
 
 func (c Color) Debugf(format string, v ...interface{}) {
-	func() {
-		var str = handlerLogger.GetLevelStringf(DEB, format, v...)
+	var str = handlerLogger.GetLevelStringf(DEB, format, v...)
 
-		if handlerLogger.DisableColor {
-			write(str)
-			return
-		}
+	if handlerLogger.DisableColor {
+		write(str)
+		return
+	}
 
-		c.Print(str)
-	}()
+	c.Print(str)
 }
 
 func (c Color) Errorf(format string, v ...interface{}) {
-	func() {
-		var str = handlerLogger.GetLevelStringf(ERR, format, v...)
+	var str = handlerLogger.GetLevelStringf(ERR, format, v...)
 
-		if handlerLogger.DisableColor {
-			write(str)
-			return
-		}
+	if handlerLogger.DisableColor {
+		write(str)
+		return
+	}
 
-		c.Print(str)
-	}()
+	c.Print(str)
 }

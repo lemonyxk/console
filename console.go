@@ -88,7 +88,7 @@ func Errorf(format string, v ...interface{}) {
 	handlerLogger.Errorf(format, v...)
 }
 
-func AssertError(v ...interface{}) {
+func IfNotNil(v ...interface{}) {
 	if len(v) == 0 {
 		return
 	}
