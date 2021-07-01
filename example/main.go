@@ -11,10 +11,8 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/lemoyxk/console"
@@ -23,8 +21,8 @@ import (
 type hook struct{}
 
 func (h *hook) Fire(entry *console.Entry) {
-	var bts, _ = json.Marshal(entry)
-	log.Println(string(bts))
+	// var bts, _ = json.Marshal(entry)
+	// log.Println(string(bts))
 }
 
 func main() {

@@ -13,6 +13,8 @@ package console
 import (
 	"fmt"
 	"time"
+
+	"github.com/lemoyxk/caller"
 )
 
 const (
@@ -162,7 +164,7 @@ func (log *Logger) Sprintf(level Level, format string, args ...interface{}) stri
 	}
 
 	if log.Flags&FILE != 0 {
-		file, line := caller()
+		file, line := caller.Auto(packageName)
 
 		entry.File = file
 		entry.Line = line
