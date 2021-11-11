@@ -23,6 +23,14 @@ func SetHook(hook Hook) {
 	handlerLogger.Hook = hook
 }
 
+func SetID(id string) {
+	handlerLogger.ID = id
+}
+
+func Colorful(flag bool) {
+	handlerLogger.Colorful = flag
+}
+
 func SetInfoColor(color Color) {
 	handlerLogger.InfoColor = color
 }

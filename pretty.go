@@ -291,6 +291,12 @@ func printStruct(v reflect.Value) {
 	var d = deep
 	deep++
 
+	if v.NumField() == 0 {
+		writeValue(Bold.Mixed(FgRed).Sprintf("%s{}", typeString(v)))
+		deep = d
+		return
+	}
+
 	writeStart(Bold.Mixed(FgRed).Sprint(typeString(v) + "{"))
 
 	isComplex = true
@@ -368,7 +374,11 @@ func simple(v reflect.Value) string {
 }
 
 func typeString(v reflect.Value) string {
-	return v.Type().String()
+	var t = v.Type().String()
+	if strings.HasSuffix(t, "}") {
+		t = t[:strings.IndexByte(t, '{')] + "{} Anonymous"
+	}
+	return t
 }
 
 func elemTypeString(v reflect.Value) string {

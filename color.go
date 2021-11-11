@@ -154,7 +154,7 @@ func (c Color) Printf(format string, v ...interface{}) {
 func (c Color) Info(v ...interface{}) {
 	var str = handlerLogger.GetLevelStringln(INF, v...)
 
-	if handlerLogger.DisableColor {
+	if !handlerLogger.Colorful {
 		write(str)
 		return
 	}
@@ -165,7 +165,7 @@ func (c Color) Info(v ...interface{}) {
 func (c Color) Debug(v ...interface{}) {
 	var str = handlerLogger.GetLevelStringln(DEB, v...)
 
-	if handlerLogger.DisableColor {
+	if !handlerLogger.Colorful {
 		write(str)
 		return
 	}
@@ -176,7 +176,7 @@ func (c Color) Debug(v ...interface{}) {
 func (c Color) Warning(v ...interface{}) {
 	var str = handlerLogger.GetLevelStringln(WAR, v...)
 
-	if handlerLogger.DisableColor {
+	if !handlerLogger.Colorful {
 		write(str)
 		return
 	}
@@ -187,7 +187,7 @@ func (c Color) Warning(v ...interface{}) {
 func (c Color) Error(v ...interface{}) {
 	var str = handlerLogger.GetLevelStringln(ERR, v...)
 
-	if handlerLogger.DisableColor {
+	if !handlerLogger.Colorful {
 		write(str)
 		return
 	}
@@ -198,7 +198,7 @@ func (c Color) Error(v ...interface{}) {
 func (c Color) Infof(format string, v ...interface{}) {
 	var str = handlerLogger.GetLevelStringf(INF, format, v...)
 
-	if handlerLogger.DisableColor {
+	if !handlerLogger.Colorful {
 		write(str)
 		return
 	}
@@ -209,7 +209,7 @@ func (c Color) Infof(format string, v ...interface{}) {
 func (c Color) Warningf(format string, v ...interface{}) {
 	var str = handlerLogger.GetLevelStringf(WAR, format, v...)
 
-	if handlerLogger.DisableColor {
+	if !handlerLogger.Colorful {
 		write(str)
 		return
 	}
@@ -220,7 +220,7 @@ func (c Color) Warningf(format string, v ...interface{}) {
 func (c Color) Debugf(format string, v ...interface{}) {
 	var str = handlerLogger.GetLevelStringf(DEB, format, v...)
 
-	if handlerLogger.DisableColor {
+	if !handlerLogger.Colorful {
 		write(str)
 		return
 	}
@@ -231,7 +231,7 @@ func (c Color) Debugf(format string, v ...interface{}) {
 func (c Color) Errorf(format string, v ...interface{}) {
 	var str = handlerLogger.GetLevelStringf(ERR, format, v...)
 
-	if handlerLogger.DisableColor {
+	if !handlerLogger.Colorful {
 		write(str)
 		return
 	}

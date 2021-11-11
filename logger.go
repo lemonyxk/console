@@ -28,12 +28,12 @@ const (
 func NewLogger() *Logger {
 	return &Logger{
 		Formatter:    NewTextFormatter(),
-		Flags:        LEVEL | TIME | FILE,
+		Flags:        LEVEL | TIME | FILE | ID,
 		InfoColor:    Bold,
 		WarningColor: FgYellow,
 		DebugColor:   FgGreen,
 		ErrorColor:   FgRed,
-		DisableColor: false,
+		Colorful:     true,
 	}
 }
 
@@ -45,7 +45,7 @@ type Logger struct {
 	WarningColor Color
 	DebugColor   Color
 	ErrorColor   Color
-	DisableColor bool
+	Colorful     bool
 	ID           string
 }
 
@@ -67,7 +67,7 @@ func (log *Logger) GetLevelStringln(level Level, args ...interface{}) string {
 func (log *Logger) Errorf(format string, args ...interface{}) {
 	var str = log.GetLevelStringf(ERR, format, args...)
 
-	if log.DisableColor {
+	if !log.Colorful {
 		write(str)
 		return
 	}
@@ -78,7 +78,7 @@ func (log *Logger) Errorf(format string, args ...interface{}) {
 func (log *Logger) Warningf(format string, args ...interface{}) {
 	var str = log.GetLevelStringf(WAR, format, args...)
 
-	if log.DisableColor {
+	if !log.Colorful {
 		write(str)
 		return
 	}
@@ -89,7 +89,7 @@ func (log *Logger) Warningf(format string, args ...interface{}) {
 func (log *Logger) Infof(format string, args ...interface{}) {
 	var str = log.GetLevelStringf(INF, format, args...)
 
-	if log.DisableColor {
+	if !log.Colorful {
 		write(str)
 		return
 	}
@@ -100,7 +100,7 @@ func (log *Logger) Infof(format string, args ...interface{}) {
 func (log *Logger) Debugf(format string, args ...interface{}) {
 	var str = log.GetLevelStringf(DEB, format, args...)
 
-	if log.DisableColor {
+	if !log.Colorful {
 		write(str)
 		return
 	}
@@ -111,7 +111,7 @@ func (log *Logger) Debugf(format string, args ...interface{}) {
 func (log *Logger) Error(args ...interface{}) {
 	var str = log.GetLevelStringln(ERR, args...)
 
-	if log.DisableColor {
+	if !log.Colorful {
 		write(str)
 		return
 	}
@@ -122,7 +122,7 @@ func (log *Logger) Error(args ...interface{}) {
 func (log *Logger) Warning(args ...interface{}) {
 	var str = log.GetLevelStringln(WAR, args...)
 
-	if log.DisableColor {
+	if !log.Colorful {
 		write(str)
 		return
 	}
@@ -133,7 +133,7 @@ func (log *Logger) Warning(args ...interface{}) {
 func (log *Logger) Info(args ...interface{}) {
 	var str = log.GetLevelStringln(INF, args...)
 
-	if log.DisableColor {
+	if !log.Colorful {
 		write(str)
 		return
 	}
@@ -144,7 +144,7 @@ func (log *Logger) Info(args ...interface{}) {
 func (log *Logger) Debug(args ...interface{}) {
 	var str = log.GetLevelStringln(DEB, args...)
 
-	if log.DisableColor {
+	if !log.Colorful {
 		write(str)
 		return
 	}
