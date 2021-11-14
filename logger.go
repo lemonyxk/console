@@ -50,16 +50,10 @@ type Logger struct {
 }
 
 func (log *Logger) GetLevelStringf(level Level, format string, args ...interface{}) string {
-	if log.Flags&LEVEL == 0 {
-		level = ""
-	}
 	return log.Sprintf(level, format, args...)
 }
 
 func (log *Logger) GetLevelStringln(level Level, args ...interface{}) string {
-	if log.Flags&LEVEL == 0 {
-		level = ""
-	}
 	var msg = joinInterface(args, " ")
 	return log.Sprintf(level, "%s\n", msg)
 }
@@ -153,7 +147,11 @@ func (log *Logger) Debug(args ...interface{}) {
 }
 
 func (log *Logger) Sprintf(level Level, format string, args ...interface{}) string {
-	var entry = &Entry{Level: level}
+	var entry = &Entry{}
+
+	if log.Flags&LEVEL != 0 {
+		entry.Level = level
+	}
 
 	if log.Flags&TIME != 0 {
 		entry.Time = time.Now()
@@ -165,7 +163,6 @@ func (log *Logger) Sprintf(level Level, format string, args ...interface{}) stri
 
 	if log.Flags&FILE != 0 {
 		file, line := caller.Auto(packageName)
-
 		entry.File = file
 		entry.Line = line
 	}
