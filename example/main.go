@@ -35,21 +35,21 @@ func (h *hook) Fire(entry *console.Entry) {
 
 func main() {
 
-	console.FgRed.Info("xixi")
-
-	var con = console.NewLogger()
-	con.ID = "123456"
-
-	con.Info("hello")
-
-	console.Pretty.Dump(Test{
-		Person: []struct{ Name string }{{Name: "a"}},
-		One:    0,
-		Three:  map[int]string{},
-		Two:    0,
-	})
-
-	console.Pretty.Dump(console.NewLogger())
+	// console.FgRed.Info("xixi")
+	//
+	// var con = console.NewLogger()
+	// con.ID = "123456"
+	//
+	// con.Info("hello")
+	//
+	// console.Pretty.Dump(Test{
+	// 	Person: []struct{ Name string }{{Name: "a"}},
+	// 	One:    0,
+	// 	Three:  map[int]string{},
+	// 	Two:    0,
+	// })
+	//
+	// console.Pretty.Dump(console.NewLogger())
 
 	// console.Reset.Println("1", "2", "3")
 	// console.BgBlue.Println("1", "2", "3")

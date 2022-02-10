@@ -49,7 +49,7 @@ func (f *textFormatter) Format(entry *Entry) string {
 
 	var format = "%s " + entry.Format
 	if len(flags) == 0 {
-		format = entry.Format
+		format = "%s" + entry.Format
 	}
 	var args = append([]interface{}{strings.Join(flags, " ")}, entry.Args...)
 
