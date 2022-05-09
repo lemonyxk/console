@@ -14,7 +14,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/lemoyxk/caller"
+	"github.com/lemonyxk/caller"
 )
 
 const (
@@ -22,18 +22,18 @@ const (
 	LEVEL = 1 << iota
 	TIME
 	FILE
-	ID
 )
 
 func NewLogger() *Logger {
 	return &Logger{
 		Formatter:    NewTextFormatter(),
-		Flags:        LEVEL | TIME | FILE | ID,
+		Flags:        LEVEL | TIME | FILE,
 		InfoColor:    Bold,
 		WarningColor: FgYellow,
 		DebugColor:   FgGreen,
 		ErrorColor:   FgRed,
 		Colorful:     true,
+		Fields:       make(map[string]any),
 	}
 }
 
@@ -46,107 +46,115 @@ type Logger struct {
 	DebugColor   Color
 	ErrorColor   Color
 	Colorful     bool
-	ID           string
+	Fields       map[string]any
 }
 
-func (log *Logger) GetLevelStringf(level Level, format string, args ...interface{}) string {
-	return log.Sprintf(level, format, args...)
+func (log *Logger) Errorf(format string, args ...any) {
+	var str = log.getLevelStringf(ERR, format, args...)
+
+	if !log.Colorful {
+		write(str)
+		return
+	}
+
+	log.ErrorColor.Print(str)
 }
 
-func (log *Logger) GetLevelStringln(level Level, args ...interface{}) string {
+func (log *Logger) Warningf(format string, args ...any) {
+	var str = log.getLevelStringf(WAR, format, args...)
+
+	if !log.Colorful {
+		write(str)
+		return
+	}
+
+	log.WarningColor.Print(str)
+}
+
+func (log *Logger) Infof(format string, args ...any) {
+	var str = log.getLevelStringf(INF, format, args...)
+
+	if !log.Colorful {
+		write(str)
+		return
+	}
+
+	log.InfoColor.Print(str)
+}
+
+func (log *Logger) Debugf(format string, args ...any) {
+	var str = log.getLevelStringf(DEB, format, args...)
+
+	if !log.Colorful {
+		write(str)
+		return
+	}
+
+	log.DebugColor.Print(str)
+}
+
+func (log *Logger) Error(args ...any) {
+	var str = log.getLevelStringln(ERR, args...)
+
+	if !log.Colorful {
+		write(str)
+		return
+	}
+
+	log.ErrorColor.Print(str)
+}
+
+func (log *Logger) Warning(args ...any) {
+	var str = log.getLevelStringln(WAR, args...)
+
+	if !log.Colorful {
+		write(str)
+		return
+	}
+
+	log.WarningColor.Print(str)
+}
+
+func (log *Logger) Info(args ...any) {
+	var str = log.getLevelStringln(INF, args...)
+
+	if !log.Colorful {
+		write(str)
+		return
+	}
+
+	log.InfoColor.Print(str)
+}
+
+func (log *Logger) Debug(args ...any) {
+	var str = log.getLevelStringln(DEB, args...)
+
+	if !log.Colorful {
+		write(str)
+		return
+	}
+
+	log.DebugColor.Print(str)
+}
+
+func (log *Logger) AddField(key string, value any) {
+	log.Fields[key] = value
+}
+
+func (log *Logger) SetFields(fields map[string]any) {
+	log.Fields = fields
+}
+
+func (log *Logger) getLevelStringf(level Level, format string, args ...any) string {
+	return log.levelSprintf(level, format, args...)
+}
+
+func (log *Logger) getLevelStringln(level Level, args ...any) string {
 	var msg = joinInterface(args, " ")
-	return log.Sprintf(level, "%s\n", msg)
+	return log.levelSprintf(level, "%s\n", msg)
 }
 
-func (log *Logger) Errorf(format string, args ...interface{}) {
-	var str = log.GetLevelStringf(ERR, format, args...)
-
-	if !log.Colorful {
-		write(str)
-		return
-	}
-
-	log.ErrorColor.Print(str)
-}
-
-func (log *Logger) Warningf(format string, args ...interface{}) {
-	var str = log.GetLevelStringf(WAR, format, args...)
-
-	if !log.Colorful {
-		write(str)
-		return
-	}
-
-	log.WarningColor.Print(str)
-}
-
-func (log *Logger) Infof(format string, args ...interface{}) {
-	var str = log.GetLevelStringf(INF, format, args...)
-
-	if !log.Colorful {
-		write(str)
-		return
-	}
-
-	log.InfoColor.Print(str)
-}
-
-func (log *Logger) Debugf(format string, args ...interface{}) {
-	var str = log.GetLevelStringf(DEB, format, args...)
-
-	if !log.Colorful {
-		write(str)
-		return
-	}
-
-	log.DebugColor.Print(str)
-}
-
-func (log *Logger) Error(args ...interface{}) {
-	var str = log.GetLevelStringln(ERR, args...)
-
-	if !log.Colorful {
-		write(str)
-		return
-	}
-
-	log.ErrorColor.Print(str)
-}
-
-func (log *Logger) Warning(args ...interface{}) {
-	var str = log.GetLevelStringln(WAR, args...)
-
-	if !log.Colorful {
-		write(str)
-		return
-	}
-
-	log.WarningColor.Print(str)
-}
-
-func (log *Logger) Info(args ...interface{}) {
-	var str = log.GetLevelStringln(INF, args...)
-
-	if !log.Colorful {
-		write(str)
-		return
-	}
-
-	log.InfoColor.Print(str)
-}
-
-func (log *Logger) Debug(args ...interface{}) {
-	var str = log.GetLevelStringln(DEB, args...)
-
-	if !log.Colorful {
-		write(str)
-		return
-	}
-
-	log.DebugColor.Print(str)
-}
-
-func (log *Logger) Sprintf(level Level, format string, args ...interface{}) string {
+func (log *Logger) levelSprintf(level Level, format string, args ...any) string {
 	var entry = &Entry{}
 
 	if log.Flags&LEVEL != 0 {
@@ -157,10 +165,6 @@ func (log *Logger) Sprintf(level Level, format string, args ...interface{}) stri
 		entry.Time = time.Now()
 	}
 
-	if log.Flags&ID != 0 {
-		entry.ID = log.ID
-	}
-
 	if log.Flags&FILE != 0 {
 		file, line := caller.Auto(packageName)
 		entry.File = file
@@ -168,6 +172,7 @@ func (log *Logger) Sprintf(level Level, format string, args ...interface{}) stri
 	}
 
 	entry.Format = format
+	entry.Fields = log.Fields
 	entry.Args = args
 
 	var str string

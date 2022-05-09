@@ -10,7 +10,7 @@
 
 package console
 
-func panicIfError(args ...interface{}) {
+func panicIfError(args ...any) {
 	if len(args) == 0 {
 		return
 	}

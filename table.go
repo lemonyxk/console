@@ -40,12 +40,12 @@ func NewList() *list {
 	return &list{list2.NewWriter()}
 }
 
-func (l *list) AppendItem(v interface{}) *list {
+func (l *list) AppendItem(v any) *list {
 	l.write.AppendItem(v)
 	return l
 }
 
-func (l *list) AppendItems(v ...interface{}) *list {
+func (l *list) AppendItems(v ...any) *list {
 	l.write.AppendItems(v)
 	return l
 }
@@ -72,7 +72,7 @@ func NewTable() *table {
 	return &table{tab.NewWriter()}
 }
 
-func (t *table) Header(v ...interface{}) *table {
+func (t *table) Header(v ...any) *table {
 	t.write.AppendHeader(v)
 	return t
 }
@@ -86,12 +86,12 @@ func (t *table) Style() *tab.Style {
 	return t.write.Style()
 }
 
-func (t *table) Row(v ...interface{}) *table {
+func (t *table) Row(v ...any) *table {
 	t.write.AppendRow(v)
 	return t
 }
 
-func (t *table) Footer(v ...interface{}) *table {
+func (t *table) Footer(v ...any) *table {
 	t.write.AppendFooter(v)
 	return t
 }
@@ -106,7 +106,7 @@ func (t *table) SortByNumber(number int, mode SortMode) *table {
 	return t
 }
 
-func (t *table) Title(format string, v ...interface{}) *table {
+func (t *table) Title(format string, v ...any) *table {
 	t.write.SetTitle(format, v...)
 	return t
 }

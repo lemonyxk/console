@@ -43,15 +43,15 @@ func (f *textFormatter) Format(entry *Entry) string {
 		flags = append(flags, entry.File+":"+strconv.Itoa(entry.Line))
 	}
 
-	if entry.ID != "" {
-		flags = append(flags, entry.ID)
+	for key, value := range entry.Fields {
+		flags = append(flags, key+":"+fmt.Sprintf("%v", value))
 	}
 
 	var format = "%s " + entry.Format
 	if len(flags) == 0 {
 		format = "%s" + entry.Format
 	}
-	var args = append([]interface{}{strings.Join(flags, " ")}, entry.Args...)
+	var args = append([]any{strings.Join(flags, " ")}, entry.Args...)
 
 	return fmt.Sprintf(format, args...)
 }
@@ -63,7 +63,7 @@ func NewJsonFormatter() *jsonFormatter {
 type jsonFormatter struct{}
 
 func (f *jsonFormatter) Format(entry *Entry) string {
-	var data = make(map[string]interface{})
+	var data = make(map[string]any)
 
 	if entry.Level != "" {
 		data["level"] = entry.Level
@@ -77,11 +77,11 @@ func (f *jsonFormatter) Format(entry *Entry) string {
 		data["file"] = entry.File + ":" + strconv.Itoa(entry.Line)
 	}
 
-	if entry.ID != "" {
-		data["id"] = entry.ID
+	for key, value := range entry.Fields {
+		data[key] = value
 	}
 
-	data["msg"] = fmt.Sprintf(entry.Format, entry.Args...)
+	data["message"] = fmt.Sprintf(entry.Format, entry.Args...)
 
 	var bts, err = json.Marshal(data)
 	if err != nil {

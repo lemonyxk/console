@@ -23,8 +23,12 @@ func SetHook(hook Hook) {
 	handlerLogger.Hook = hook
 }
 
-func SetID(id string) {
-	handlerLogger.ID = id
+func SetFields(fields map[string]any) {
+	handlerLogger.Fields = fields
+}
+
+func AddField(key string, value any) {
+	handlerLogger.Fields[key] = value
 }
 
 func Colorful(flag bool) {
@@ -47,56 +51,56 @@ func SetErrorColor(color Color) {
 	handlerLogger.ErrorColor = color
 }
 
-func Exit(v ...interface{}) {
+func Exit(v ...any) {
 	handlerLogger.Info(v...)
 	os.Exit(0)
 }
 
-func Println(v ...interface{}) {
+func Println(v ...any) {
 	fmt.Println(v...)
 }
 
-func Printf(format string, v ...interface{}) {
+func Printf(format string, v ...any) {
 	fmt.Printf(format, v...)
 }
 
-func OneLine(format string, v ...interface{}) {
+func OneLine(format string, v ...any) {
 	fmt.Printf("\r"+format, v...)
 }
 
-func Info(v ...interface{}) {
+func Info(v ...any) {
 	handlerLogger.Info(v...)
 }
 
-func Debug(v ...interface{}) {
+func Debug(v ...any) {
 	handlerLogger.Debug(v...)
 }
 
-func Warning(v ...interface{}) {
+func Warning(v ...any) {
 	handlerLogger.Warning(v...)
 }
 
-func Error(v ...interface{}) {
+func Error(v ...any) {
 	handlerLogger.Error(v...)
 }
 
-func Infof(format string, v ...interface{}) {
+func Infof(format string, v ...any) {
 	handlerLogger.Infof(format, v...)
 }
 
-func Warningf(format string, v ...interface{}) {
+func Warningf(format string, v ...any) {
 	handlerLogger.Warningf(format, v...)
 }
 
-func Debugf(format string, v ...interface{}) {
+func Debugf(format string, v ...any) {
 	handlerLogger.Debugf(format, v...)
 }
 
-func Errorf(format string, v ...interface{}) {
+func Errorf(format string, v ...any) {
 	handlerLogger.Errorf(format, v...)
 }
 
-// func IfNotNil(v ...interface{}) {
+// func IfNotNil(v ...any) {
 // 	if len(v) == 0 {
 // 		return
 // 	}

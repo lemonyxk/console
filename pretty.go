@@ -36,7 +36,7 @@ type pretty int
 
 var Pretty pretty
 
-func (p pretty) Dump(v ...interface{}) {
+func (p pretty) Dump(v ...any) {
 	mux.Lock()
 	for i := 0; i < len(v); i++ {
 		dump(reflect.ValueOf(v[i]))
@@ -44,7 +44,7 @@ func (p pretty) Dump(v ...interface{}) {
 	mux.Unlock()
 }
 
-func (p pretty) Public(v ...interface{}) {
+func (p pretty) Public(v ...any) {
 	mux.Lock()
 	public = true
 	private = false
@@ -54,7 +54,7 @@ func (p pretty) Public(v ...interface{}) {
 	mux.Unlock()
 }
 
-func (p pretty) Private(v ...interface{}) {
+func (p pretty) Private(v ...any) {
 	mux.Lock()
 	public = false
 	private = true
@@ -64,7 +64,7 @@ func (p pretty) Private(v ...interface{}) {
 	mux.Unlock()
 }
 
-// func (p pretty) Details(v ...interface{}) {
+// func (p pretty) Details(v ...any) {
 // 	mux.Lock()
 // 	details = true
 // 	for i := 0; i < len(v); i++ {

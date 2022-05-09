@@ -80,7 +80,7 @@ const (
 
 type Colors []Color
 
-func (c Colors) Println(v ...interface{}) {
+func (c Colors) Println(v ...any) {
 	var str = joinInterface(v, " ")
 	var colors = text.Colors{}
 	for i := 0; i < len(c); i++ {
@@ -89,7 +89,7 @@ func (c Colors) Println(v ...interface{}) {
 	write(colors.Sprint(str + "\n"))
 }
 
-func (c Colors) Sprintf(format string, v ...interface{}) string {
+func (c Colors) Sprintf(format string, v ...any) string {
 	var colors = text.Colors{}
 	for i := 0; i < len(c); i++ {
 		colors = append(colors, text.Color(c[i]))
@@ -97,7 +97,7 @@ func (c Colors) Sprintf(format string, v ...interface{}) string {
 	return colors.Sprintf(format, v...)
 }
 
-func (c Colors) Sprint(v ...interface{}) string {
+func (c Colors) Sprint(v ...any) string {
 	var colors = text.Colors{}
 	for i := 0; i < len(c); i++ {
 		colors = append(colors, text.Color(c[i]))
@@ -105,7 +105,7 @@ func (c Colors) Sprint(v ...interface{}) string {
 	return colors.Sprint(v...)
 }
 
-func (c Colors) Print(v ...interface{}) {
+func (c Colors) Print(v ...any) {
 	var colors = text.Colors{}
 	for i := 0; i < len(c); i++ {
 		colors = append(colors, text.Color(c[i]))
@@ -113,7 +113,7 @@ func (c Colors) Print(v ...interface{}) {
 	write(colors.Sprint(v...))
 }
 
-func (c Colors) Printf(format string, v ...interface{}) {
+func (c Colors) Printf(format string, v ...any) {
 	var colors = text.Colors{}
 	for i := 0; i < len(c); i++ {
 		colors = append(colors, text.Color(c[i]))
@@ -130,111 +130,23 @@ func (c Color) Mixed(color ...Color) Colors {
 	return colors
 }
 
-func (c Color) Println(v ...interface{}) {
+func (c Color) Println(v ...any) {
 	var str = joinInterface(v, " ")
 	write(text.Color(c).Sprint(str + "\n"))
 }
 
-func (c Color) Sprintf(format string, v ...interface{}) string {
+func (c Color) Sprintf(format string, v ...any) string {
 	return text.Color(c).Sprintf(format, v...)
 }
 
-func (c Color) Sprint(v ...interface{}) string {
+func (c Color) Sprint(v ...any) string {
 	return text.Color(c).Sprint(v...)
 }
 
-func (c Color) Print(v ...interface{}) {
+func (c Color) Print(v ...any) {
 	write(text.Color(c).Sprint(v...))
 }
 
-func (c Color) Printf(format string, v ...interface{}) {
+func (c Color) Printf(format string, v ...any) {
 	write(text.Color(c).Sprintf(format, v...))
-}
-
-func (c Color) Info(v ...interface{}) {
-	var str = handlerLogger.GetLevelStringln(INF, v...)
-
-	if !handlerLogger.Colorful {
-		write(str)
-		return
-	}
-
-	c.Print(str)
-}
-
-func (c Color) Debug(v ...interface{}) {
-	var str = handlerLogger.GetLevelStringln(DEB, v...)
-
-	if !handlerLogger.Colorful {
-		write(str)
-		return
-	}
-
-	c.Print(str)
-}
-
-func (c Color) Warning(v ...interface{}) {
-	var str = handlerLogger.GetLevelStringln(WAR, v...)
-
-	if !handlerLogger.Colorful {
-		write(str)
-		return
-	}
-
-	c.Print(str)
-}
-
-func (c Color) Error(v ...interface{}) {
-	var str = handlerLogger.GetLevelStringln(ERR, v...)
-
-	if !handlerLogger.Colorful {
-		write(str)
-		return
-	}
-
-	c.Print(str)
-}
-
-func (c Color) Infof(format string, v ...interface{}) {
-	var str = handlerLogger.GetLevelStringf(INF, format, v...)
-
-	if !handlerLogger.Colorful {
-		write(str)
-		return
-	}
-
-	c.Print(str)
-}
-
-func (c Color) Warningf(format string, v ...interface{}) {
-	var str = handlerLogger.GetLevelStringf(WAR, format, v...)
-
-	if !handlerLogger.Colorful {
-		write(str)
-		return
-	}
-
-	c.Print(str)
-}
-
-func (c Color) Debugf(format string, v ...interface{}) {
-	var str = handlerLogger.GetLevelStringf(DEB, format, v...)
-
-	if !handlerLogger.Colorful {
-		write(str)
-		return
-	}
-
-	c.Print(str)
-}
-
-func (c Color) Errorf(format string, v ...interface{}) {
-	var str = handlerLogger.GetLevelStringf(ERR, format, v...)
-
-	if !handlerLogger.Colorful {
-		write(str)
-		return
-	}
-
-	c.Print(str)
 }
