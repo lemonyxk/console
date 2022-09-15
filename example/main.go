@@ -70,4 +70,6 @@ func main() {
 		a any
 	}
 	console.Pretty.Dump(b{a: true}, b{a: false})
+
+	console.Error(`hello world`)
 }

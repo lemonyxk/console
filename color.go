@@ -80,15 +80,6 @@ const (
 
 type Colors []Color
 
-func (c Colors) Println(v ...any) {
-	var str = joinInterface(v, " ")
-	var colors = text.Colors{}
-	for i := 0; i < len(c); i++ {
-		colors = append(colors, text.Color(c[i]))
-	}
-	write(colors.Sprint(str + "\n"))
-}
-
 func (c Colors) Sprintf(format string, v ...any) string {
 	var colors = text.Colors{}
 	for i := 0; i < len(c); i++ {
@@ -103,6 +94,32 @@ func (c Colors) Sprint(v ...any) string {
 		colors = append(colors, text.Color(c[i]))
 	}
 	return colors.Sprint(v...)
+}
+
+func (c Color) Mixed(color ...Color) Colors {
+	var colors = Colors{}
+	colors = append(colors, c)
+	for i := 0; i < len(color); i++ {
+		colors = append(colors, color[i])
+	}
+	return colors
+}
+
+func (c Color) Sprintf(format string, v ...any) string {
+	return text.Color(c).Sprintf(format, v...)
+}
+
+func (c Color) Sprint(v ...any) string {
+	return text.Color(c).Sprint(v...)
+}
+
+func (c Colors) Println(v ...any) {
+	var str = joinInterface(v, " ")
+	var colors = text.Colors{}
+	for i := 0; i < len(c); i++ {
+		colors = append(colors, text.Color(c[i]))
+	}
+	write(colors.Sprint(str + "\n"))
 }
 
 func (c Colors) Print(v ...any) {
@@ -121,26 +138,9 @@ func (c Colors) Printf(format string, v ...any) {
 	write(colors.Sprintf(format, v...))
 }
 
-func (c Color) Mixed(color ...Color) Colors {
-	var colors = Colors{}
-	colors = append(colors, c)
-	for i := 0; i < len(color); i++ {
-		colors = append(colors, color[i])
-	}
-	return colors
-}
-
 func (c Color) Println(v ...any) {
 	var str = joinInterface(v, " ")
 	write(text.Color(c).Sprint(str + "\n"))
-}
-
-func (c Color) Sprintf(format string, v ...any) string {
-	return text.Color(c).Sprintf(format, v...)
-}
-
-func (c Color) Sprint(v ...any) string {
-	return text.Color(c).Sprint(v...)
 }
 
 func (c Color) Print(v ...any) {

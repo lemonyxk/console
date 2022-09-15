@@ -53,11 +53,11 @@ func (log *Logger) Errorf(format string, args ...any) {
 	var str = log.getLevelStringf(ERR, format, args...)
 
 	if !log.Colorful {
-		write(str)
+		errWrite(str)
 		return
 	}
 
-	log.ErrorColor.Print(str)
+	errWrite(log.ErrorColor.Sprint(str))
 }
 
 func (log *Logger) Warningf(format string, args ...any) {
@@ -68,7 +68,7 @@ func (log *Logger) Warningf(format string, args ...any) {
 		return
 	}
 
-	log.WarningColor.Print(str)
+	write(log.WarningColor.Sprint(str))
 }
 
 func (log *Logger) Infof(format string, args ...any) {
@@ -79,7 +79,7 @@ func (log *Logger) Infof(format string, args ...any) {
 		return
 	}
 
-	log.InfoColor.Print(str)
+	write(log.InfoColor.Sprint(str))
 }
 
 func (log *Logger) Debugf(format string, args ...any) {
@@ -90,18 +90,18 @@ func (log *Logger) Debugf(format string, args ...any) {
 		return
 	}
 
-	log.DebugColor.Print(str)
+	write(log.DebugColor.Sprint(str))
 }
 
 func (log *Logger) Error(args ...any) {
 	var str = log.getLevelStringln(ERR, args...)
 
 	if !log.Colorful {
-		write(str)
+		errWrite(str)
 		return
 	}
 
-	log.ErrorColor.Print(str)
+	errWrite(log.ErrorColor.Sprint(str))
 }
 
 func (log *Logger) Warning(args ...any) {
@@ -112,7 +112,7 @@ func (log *Logger) Warning(args ...any) {
 		return
 	}
 
-	log.WarningColor.Print(str)
+	write(log.WarningColor.Sprint(str))
 }
 
 func (log *Logger) Info(args ...any) {
@@ -123,7 +123,7 @@ func (log *Logger) Info(args ...any) {
 		return
 	}
 
-	log.InfoColor.Print(str)
+	write(log.InfoColor.Sprint(str))
 }
 
 func (log *Logger) Debug(args ...any) {
@@ -134,7 +134,7 @@ func (log *Logger) Debug(args ...any) {
 		return
 	}
 
-	log.DebugColor.Print(str)
+	write(log.DebugColor.Sprint(str))
 }
 
 func (log *Logger) AddField(key string, value any) {
