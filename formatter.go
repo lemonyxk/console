@@ -21,13 +21,13 @@ type Formatter interface {
 	Format(entry *Entry) string
 }
 
-func NewTextFormatter() *textFormatter {
-	return &textFormatter{}
+func NewTextFormatter() *TextFormatter {
+	return &TextFormatter{}
 }
 
-type textFormatter struct{}
+type TextFormatter struct{}
 
-func (f *textFormatter) Format(entry *Entry) string {
+func (f *TextFormatter) Format(entry *Entry) string {
 
 	var flags []string
 
@@ -56,13 +56,13 @@ func (f *textFormatter) Format(entry *Entry) string {
 	return fmt.Sprintf(format, args...)
 }
 
-func NewJsonFormatter() *jsonFormatter {
-	return &jsonFormatter{}
+func NewJsonFormatter() *JsonFormatter {
+	return &JsonFormatter{}
 }
 
-type jsonFormatter struct{}
+type JsonFormatter struct{}
 
-func (f *jsonFormatter) Format(entry *Entry) string {
+func (f *JsonFormatter) Format(entry *Entry) string {
 	var data = make(map[string]any)
 
 	if entry.Level != "" {

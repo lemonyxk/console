@@ -18,6 +18,10 @@ import (
 	"text/tabwriter"
 )
 
+var setPublic = true
+var setPrivate = true
+var setDetails = false
+
 var mux sync.Mutex
 
 var visited = make(map[uintptr]bool)
@@ -26,9 +30,9 @@ var tw = tabwriter.NewWriter(writer, 2, 0, 1, ' ', 0)
 var deep = 0
 var isComplex = false
 
-var public = true
-var private = true
-var details = false
+var public = setPublic
+var private = setPrivate
+var details = setDetails
 
 var tabWidth = 4
 
@@ -46,8 +50,8 @@ func (p pretty) Dump(v ...any) {
 
 func (p pretty) Public(v ...any) {
 	mux.Lock()
+	setPublic = true
 	public = true
-	private = false
 	for i := 0; i < len(v); i++ {
 		dump(reflect.ValueOf(v[i]))
 	}
@@ -56,7 +60,7 @@ func (p pretty) Public(v ...any) {
 
 func (p pretty) Private(v ...any) {
 	mux.Lock()
-	public = false
+	setPrivate = true
 	private = true
 	for i := 0; i < len(v); i++ {
 		dump(reflect.ValueOf(v[i]))
@@ -64,14 +68,15 @@ func (p pretty) Private(v ...any) {
 	mux.Unlock()
 }
 
-// func (p pretty) Details(v ...any) {
-// 	mux.Lock()
-// 	details = true
-// 	for i := 0; i < len(v); i++ {
-// 		dump(reflect.ValueOf(v[i]))
-// 	}
-// 	mux.Unlock()
-// }
+func (p pretty) Details(v ...any) {
+	mux.Lock()
+	setDetails = true
+	details = true
+	for i := 0; i < len(v); i++ {
+		dump(reflect.ValueOf(v[i]))
+	}
+	mux.Unlock()
+}
 
 func dump(v reflect.Value) {
 	format(v)
@@ -80,9 +85,9 @@ func dump(v reflect.Value) {
 
 func reset() {
 
-	public = true
-	private = true
-	details = false
+	public = setPublic
+	private = setPrivate
+	details = setDetails
 
 	deep = 0
 	isComplex = false
@@ -122,32 +127,28 @@ func format(rv reflect.Value) {
 
 	// if is error or Stringer
 	// config details
-	// if !details && rv.IsValid() {
-	//
-	// 	if rv.Kind() == reflect.Interface {
-	// 		format(rv.Elem())
-	// 		return
-	// 	}
-	//
-	// 	// has Error method
-	// 	var m = rv.MethodByName("Error")
-	// 	if m.IsValid() && m.String() == `<func() string Value>` {
-	// 		if m.CanInterface() {
-	// 			writeValue(Bold.Mixed(FgGreen).Sprint(`"` + m.Call(nil)[0].String() + `"`))
-	// 			return
-	// 		}
-	// 	}
-	//
-	// 	// has String method
-	// 	m = rv.MethodByName("String")
-	// 	if m.IsValid() && m.String() == `<func() string Value>` {
-	// 		if m.CanInterface() {
-	// 			writeValue(Bold.Mixed(FgGreen).Sprint(`"` + m.Call(nil)[0].String() + `"`))
-	// 			return
-	// 		}
-	// 	}
-	//
-	// }
+	if !details && rv.IsValid() {
+
+		if rv.Kind() == reflect.Interface {
+			format(rv.Elem())
+			return
+		}
+
+		// has Error method
+		var m = rv.MethodByName("Error")
+		if m.IsValid() && m.CanInterface() {
+			writeValue(Bold.Mixed(FgGreen).Sprint(m.Call(nil)[0].String()))
+			return
+		}
+
+		// has String method
+		m = rv.MethodByName("String")
+		if m.IsValid() && m.CanInterface() {
+			writeValue(Bold.Mixed(FgGreen).Sprint(m.Call(nil)[0].String()))
+			return
+		}
+
+	}
 
 	switch rv.Kind() {
 
@@ -179,7 +180,11 @@ func format(rv reflect.Value) {
 	case reflect.Array, reflect.Slice:
 		printSlice(rv)
 	case reflect.Ptr:
-		printPtr(rv)
+		if rv.CanInterface() {
+			printPtr(rv)
+		} else {
+			writeValue(Bold.Sprintf("%s", addrString(rv)))
+		}
 	case reflect.Interface:
 		format(rv.Elem())
 	default:
@@ -189,22 +194,22 @@ func format(rv reflect.Value) {
 
 func printFunc(v reflect.Value) {
 	if !v.IsNil() {
-		writeValue(Bold.Mixed(FgYellow).Sprintf("%s {...}", typeString(v)))
+		writeValue(Bold.Mixed(FgYellow).Sprintf("%s {}", typeString(v)))
 	} else {
-		writeValue(Bold.Mixed(FgYellow).Sprintf("(%s {...}) (nil)", typeString(v)))
+		writeValue(Bold.Mixed(FgYellow).Sprintf("%s {} nil", typeString(v)))
 	}
 }
 
 func printChan(v reflect.Value) {
 	if !v.IsNil() {
-		writeValue(Bold.Mixed(FgMagenta).Sprintf("(%s) (%s)", typeString(v), addrString(v)))
+		writeValue(Bold.Mixed(FgMagenta).Sprintf("%s %s", typeString(v), addrString(v)))
 	} else {
-		writeValue(Bold.Mixed(FgMagenta).Sprintf("(%s) (nil)", typeString(v)))
+		writeValue(Bold.Mixed(FgMagenta).Sprintf("%s nil", typeString(v)))
 	}
 }
 
 func printUnsafePointer(v reflect.Value) {
-	writeValue(Bold.Sprintf("(%s) (%s)", typeString(v), addrString(v)))
+	writeValue(Bold.Sprintf("%s %s", typeString(v), addrString(v)))
 }
 
 func printMap(v reflect.Value) {
@@ -214,23 +219,23 @@ func printMap(v reflect.Value) {
 
 	if v.Len() == 0 {
 		if !v.IsNil() {
-			writeValue(Bold.Sprintf("%s{}", typeString(v)))
+			writeValue(Bold.Sprintf("%s {}", typeString(v)))
 		} else {
-			writeValue(Bold.Sprintf("(%s) (nil)", typeString(v)))
+			writeValue(Bold.Sprintf("%s nil", typeString(v)))
 		}
 		deep = d
 		return
 	}
 
 	if visited[v.Pointer()] {
-		writeValue(Bold.Sprintf("%s{...}", typeString(v)))
+		writeValue(Bold.Sprintf("%s {}", typeString(v)))
 		deep = d
 		return
 	}
 
 	visited[v.Pointer()] = true
 
-	writeStart(Bold.Mixed(FgRed).Sprint(typeString(v)) + "{")
+	writeStart(Bold.Mixed(FgRed).Sprint(typeString(v)) + Bold.Sprint(" {"))
 
 	isComplex = true
 
@@ -253,9 +258,9 @@ func printSlice(v reflect.Value) {
 
 	if v.Len() == 0 {
 		if !v.IsNil() {
-			writeValue(Bold.Sprintf("%s{}", typeString(v)))
+			writeValue(Bold.Sprintf("%s {}", typeString(v)))
 		} else {
-			writeValue(Bold.Sprintf("(%s) (nil)", typeString(v)))
+			writeValue(Bold.Sprintf("%s nil", typeString(v)))
 		}
 		deep = d
 		return
@@ -264,14 +269,14 @@ func printSlice(v reflect.Value) {
 	//  if is array, will be handled in printPtr
 	if v.Kind() == reflect.Slice {
 		if visited[v.Pointer()] {
-			writeValue(Bold.Sprintf("%s{...}", typeString(v)))
+			writeValue(Bold.Sprintf("%s {}", typeString(v)))
 			deep = d
 			return
 		}
 		visited[v.Pointer()] = true
 	}
 
-	writeStart(Bold.Mixed(FgRed).Sprint(typeString(v) + "{"))
+	writeStart(Bold.Mixed(FgRed).Sprint(typeString(v)) + Bold.Sprint(" {"))
 
 	isComplex = true
 
@@ -292,12 +297,12 @@ func printStruct(v reflect.Value) {
 	deep++
 
 	if v.NumField() == 0 {
-		writeValue(Bold.Mixed(FgRed).Sprintf("%s{}", typeString(v)))
+		writeValue(Bold.Mixed(FgRed).Sprintf("%s", typeString(v)) + Bold.Sprint(" {}"))
 		deep = d
 		return
 	}
 
-	writeStart(Bold.Mixed(FgRed).Sprint(typeString(v) + "{"))
+	writeStart(Bold.Mixed(FgRed).Sprint(typeString(v)) + Bold.Sprint(" {"))
 
 	isComplex = true
 
@@ -328,7 +333,7 @@ func printStruct(v reflect.Value) {
 func printPtr(v reflect.Value) {
 
 	if visited[v.Pointer()] {
-		writeValue(Bold.Sprintf("&%s{...}", elemTypeString(v)))
+		writeValue(Bold.Sprintf("&%s {}", elemTypeString(v)))
 		return
 	}
 
@@ -340,7 +345,7 @@ func printPtr(v reflect.Value) {
 		writeString(Bold.Sprint("&"))
 		format(v.Elem())
 	} else {
-		writeValue(Bold.Sprintf("(%s) (nil)", typeString(v)))
+		writeValue(Bold.Sprintf("%s nil", typeString(v)))
 	}
 }
 
@@ -353,13 +358,13 @@ func simple(v reflect.Value) string {
 	case reflect.Uint, reflect.Uintptr:
 		return fmt.Sprintf("%#v", v.Uint())
 	case reflect.Uint8:
-		return fmt.Sprintf("0x%02x", v.Uint())
+		return fmt.Sprintf("%d", v.Uint())
 	case reflect.Uint16:
-		return fmt.Sprintf("0x%04x", v.Uint())
+		return fmt.Sprintf("%d", v.Uint())
 	case reflect.Uint32:
-		return fmt.Sprintf("0x%08x", v.Uint())
+		return fmt.Sprintf("%d", v.Uint())
 	case reflect.Uint64:
-		return fmt.Sprintf("0x%016x", v.Uint())
+		return fmt.Sprintf("%d", v.Uint())
 	case reflect.Float32, reflect.Float64:
 		return fmt.Sprintf("%f", v.Float())
 	case reflect.Complex64, reflect.Complex128:

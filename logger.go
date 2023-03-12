@@ -26,13 +26,14 @@ const (
 
 func NewLogger() *Logger {
 	return &Logger{
+		Hook:         nil,
 		Formatter:    NewTextFormatter(),
 		Flags:        LEVEL | TIME | FILE,
 		InfoColor:    Bold,
 		WarningColor: FgYellow,
 		DebugColor:   FgGreen,
 		ErrorColor:   FgRed,
-		Colorful:     true,
+		Colorful:     false,
 		Fields:       make(map[string]any),
 	}
 }
