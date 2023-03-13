@@ -12,6 +12,7 @@ package console
 
 import (
 	"fmt"
+	"os"
 	"reflect"
 	"strings"
 	"sync"
@@ -25,7 +26,7 @@ var setDetails = false
 var mux sync.Mutex
 
 var visited = make(map[uintptr]bool)
-var tw = tabwriter.NewWriter(writer, 2, 0, 1, ' ', 0)
+var tw = tabwriter.NewWriter(os.Stdout, 2, 0, 1, ' ', 0)
 
 var deep = 0
 var isComplex = false
@@ -83,6 +84,10 @@ func dump(v reflect.Value) {
 	reset()
 }
 
+func  write(str string) {
+	panicIfError(os.Stdout.Write([]byte(str)))
+}
+
 func reset() {
 
 	public = setPublic
@@ -112,7 +117,7 @@ func writeKey(s string) {
 
 func writeStart(s string) {
 	_ = tw.Flush()
-	tw = tabwriter.NewWriter(writer, 2, 0, 1, ' ', 0)
+	tw = tabwriter.NewWriter(os.Stdout, 2, 0, 1, ' ', 0)
 	panicIfError(fmt.Fprintf(tw, "%s\n", s))
 }
 

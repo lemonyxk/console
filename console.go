@@ -5,54 +5,10 @@ import (
 	"os"
 )
 
-var handlerLogger = NewLogger()
-
-func SetLogger(logger *Logger) {
-	handlerLogger = logger
-}
-
-func SetFormatter(formatter Formatter) {
-	handlerLogger.Formatter = formatter
-}
-
-func SetFlags(flags int) {
-	handlerLogger.Flags = flags
-}
-
-func SetHook(hook Hook) {
-	handlerLogger.Hook = hook
-}
-
-func SetFields(fields map[string]any) {
-	handlerLogger.Fields = fields
-}
-
-func AddField(key string, value any) {
-	handlerLogger.Fields[key] = value
-}
-
-func Colorful(flag bool) {
-	handlerLogger.Colorful = flag
-}
-
-func SetInfoColor(color Color) {
-	handlerLogger.InfoColor = color
-}
-
-func SetWarningColor(color Color) {
-	handlerLogger.WarningColor = color
-}
-
-func SetDebugColor(color Color) {
-	handlerLogger.DebugColor = color
-}
-
-func SetErrorColor(color Color) {
-	handlerLogger.ErrorColor = color
-}
+var DefaultLogger = NewLogger()
 
 func Exit(v ...any) {
-	handlerLogger.Info(v...)
+	DefaultLogger.Info(v...)
 	os.Exit(0)
 }
 
@@ -69,43 +25,33 @@ func OneLine(format string, v ...any) {
 }
 
 func Info(v ...any) {
-	handlerLogger.Info(v...)
+	DefaultLogger.Info(v...)
 }
 
 func Debug(v ...any) {
-	handlerLogger.Debug(v...)
+	DefaultLogger.Debug(v...)
 }
 
 func Warning(v ...any) {
-	handlerLogger.Warning(v...)
+	DefaultLogger.Warning(v...)
 }
 
 func Error(v ...any) {
-	handlerLogger.Error(v...)
+	DefaultLogger.Error(v...)
 }
 
 func Infof(format string, v ...any) {
-	handlerLogger.Infof(format, v...)
+	DefaultLogger.Infof(format, v...)
 }
 
 func Warningf(format string, v ...any) {
-	handlerLogger.Warningf(format, v...)
+	DefaultLogger.Warningf(format, v...)
 }
 
 func Debugf(format string, v ...any) {
-	handlerLogger.Debugf(format, v...)
+	DefaultLogger.Debugf(format, v...)
 }
 
 func Errorf(format string, v ...any) {
-	handlerLogger.Errorf(format, v...)
+	DefaultLogger.Errorf(format, v...)
 }
-
-// func IfNotNil(v ...any) {
-// 	if len(v) == 0 {
-// 		return
-// 	}
-// 	if isNil(v[len(v)-1]) {
-// 		return
-// 	}
-// 	handlerLogger.Errorf("%v\n", v[len(v)-1])
-// }
