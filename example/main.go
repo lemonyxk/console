@@ -86,9 +86,5 @@ func main() {
 
 	console.Error(`hello world`)
 
-	console.SetFields(map[string]any{
-		"uuid": "12345",
-	})
-
 	console.Info("hello world")
 }
