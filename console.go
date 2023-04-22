@@ -7,6 +7,10 @@ import (
 
 var DefaultLogger = NewLogger()
 
+func init() {
+	DefaultLogger.Deep = 5
+}
+
 func Exit(v ...any) {
 	DefaultLogger.Info(v...)
 	os.Exit(0)

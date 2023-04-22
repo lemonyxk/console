@@ -87,4 +87,8 @@ func main() {
 	console.Error(`hello world`)
 
 	console.Info("hello world")
+
+	var log = console.NewLogger()
+
+	log.Info("hello world")
 }

@@ -40,6 +40,7 @@ func NewLogger() *Logger {
 		Fields:       make(map[string]any),
 		Stdout:       os.Stdout,
 		Stderr:       os.Stderr,
+		Deep:         4,
 	}
 }
 
@@ -55,6 +56,7 @@ type Logger struct {
 	Fields       map[string]any
 	Stdout       io.Writer
 	Stderr       io.Writer
+	Deep         int
 
 	mux sync.Mutex
 }
@@ -168,9 +170,9 @@ func (l *Logger) levelSprintf(level Level, format string, args ...any) string {
 	}
 
 	if l.Flags&FILE != 0 {
-		file, line := caller.Auto(packageName)
-		entry.File = file
-		entry.Line = line
+		info := caller.Deep(l.Deep)
+		entry.File = info.File
+		entry.Line = info.Line
 	}
 
 	entry.Format = format

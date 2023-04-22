@@ -13,12 +13,7 @@ package console
 import (
 	"bytes"
 	"fmt"
-	"reflect"
 )
-
-type em struct{}
-
-var packageName = reflect.TypeOf(em{}).PkgPath()
 
 func joinInterface(v []any, sep string) string {
 	var buf bytes.Buffer
