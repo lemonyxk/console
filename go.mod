@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/jedib0t/go-pretty v4.3.0+incompatible
-	github.com/lemonyxk/caller v0.0.0-20230422215037-d0c69a1c05aa
+	github.com/lemonyxk/caller v0.0.0-20230423062200-b124cb7ec0fe
 )
 
 require (
