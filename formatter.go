@@ -43,8 +43,23 @@ func (f *TextFormatter) Format(entry *Entry) string {
 		flags = append(flags, entry.File+":"+strconv.Itoa(entry.Line))
 	}
 
-	for key, value := range entry.Fields {
-		flags = append(flags, key+":"+fmt.Sprintf("%v", value))
+	for i := 0; i < len(entry.Fields); i++ {
+		var current = entry.Fields[i]
+		if current.Key == "" && current.Value == nil {
+			continue
+		}
+
+		if current.Key != "" && current.Value == nil {
+			flags = append(flags, current.Key)
+			continue
+		}
+
+		if current.Key == "" && current.Value != nil {
+			flags = append(flags, fmt.Sprintf("%v", current.Value))
+			continue
+		}
+
+		flags = append(flags, current.Key+":"+fmt.Sprintf("%v", current.Value))
 	}
 
 	var format = "%s " + entry.Format
@@ -77,8 +92,12 @@ func (f *JsonFormatter) Format(entry *Entry) string {
 		data["file"] = entry.File + ":" + strconv.Itoa(entry.Line)
 	}
 
-	for key, value := range entry.Fields {
-		data[key] = value
+	for i := 0; i < len(entry.Fields); i++ {
+		var current = entry.Fields[i]
+		if current.Key == "" || current.Value == nil {
+			continue
+		}
+		data[current.Key] = current.Value
 	}
 
 	data["message"] = fmt.Sprintf(entry.Format, entry.Args...)

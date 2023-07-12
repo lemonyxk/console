@@ -21,12 +21,17 @@ const (
 	WAR Level = "WAR"
 )
 
+type Field struct {
+	Key   string
+	Value any
+}
+
 type Entry struct {
-	Level  Level          `json:"level,omitempty"`
-	File   string         `json:"file,omitempty"`
-	Line   int            `json:"line,omitempty"`
-	Time   time.Time      `json:"time,omitempty"`
-	Format string         `json:"format"`
-	Fields map[string]any `json:"fields,omitempty"`
-	Args   []any          `json:"args"`
+	Level  Level     `json:"level,omitempty"`
+	File   string    `json:"file,omitempty"`
+	Line   int       `json:"line,omitempty"`
+	Time   time.Time `json:"time,omitempty"`
+	Format string    `json:"format"`
+	Fields []Field   `json:"fields,omitempty"`
+	Args   []any     `json:"args"`
 }

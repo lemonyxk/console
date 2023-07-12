@@ -37,7 +37,7 @@ func NewLogger() *Logger {
 		DebugColor:   FgGreen,
 		ErrorColor:   FgRed,
 		Colorful:     false,
-		Fields:       make(map[string]any),
+		Fields:       []Field{},
 		Stdout:       os.Stdout,
 		Stderr:       os.Stderr,
 		Deep:         4,
@@ -53,7 +53,7 @@ type Logger struct {
 	DebugColor   Color
 	ErrorColor   Color
 	Colorful     bool
-	Fields       map[string]any
+	Fields       []Field
 	Stdout       io.Writer
 	Stderr       io.Writer
 	Deep         int
@@ -142,10 +142,10 @@ func (l *Logger) Debug(args ...any) {
 }
 
 func (l *Logger) AddField(key string, value any) {
-	l.Fields[key] = value
+	l.Fields = append(l.Fields, Field{key, value})
 }
 
-func (l *Logger) SetFields(fields map[string]any) {
+func (l *Logger) SetFields(fields ...Field) {
 	l.Fields = fields
 }
 
