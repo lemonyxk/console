@@ -2,17 +2,56 @@ package console
 
 import (
 	"fmt"
+	"github.com/rs/zerolog"
+	"io"
 	"os"
+	"strconv"
+	"strings"
+	"time"
 )
 
-var DefaultLogger = NewLogger()
+type Logger struct {
+	*zerolog.Event
+}
+
+func (l *Logger) Log(msg ...any) {
+	l.Event.Msg(fmt.Sprint(msg...))
+}
+
+func (l *Logger) Logf(format string, v ...any) {
+	l.Event.Msgf(format, v...)
+}
+
+func NewLogger(event *zerolog.Event) *Logger {
+	return &Logger{Event: event}
+}
+
+var defaultLogger = zerolog.New(os.Stdout).With().Caller().Logger()
+
+var Info = NewLogger(defaultLogger.Info())
+var Debug = NewLogger(defaultLogger.Debug())
+var Warn = NewLogger(defaultLogger.Warn())
+var Error = NewLogger(defaultLogger.Error())
+
+func New(w io.Writer) zerolog.Logger {
+	return zerolog.New(w)
+}
 
 func init() {
-	DefaultLogger.Deep = 5
+	zerolog.CallerFieldName = "file"
+	zerolog.TimeFieldFormat = time.DateTime
+	zerolog.TimestampFieldName = "time"
+	zerolog.CallerMarshalFunc = func(pc uintptr, file string, line int) string {
+		var paths = strings.Split(file, string(os.PathSeparator))
+		if len(paths) > 3 {
+			file = strings.Join(paths[len(paths)-3:], string(os.PathSeparator))
+		}
+		return file + ":" + strconv.Itoa(line)
+	}
 }
 
 func Exit(v ...any) {
-	DefaultLogger.Info(v...)
+	fmt.Println(v...)
 	os.Exit(0)
 }
 
@@ -26,36 +65,4 @@ func Printf(format string, v ...any) {
 
 func OneLine(format string, v ...any) {
 	fmt.Printf("\r"+format, v...)
-}
-
-func Info(v ...any) {
-	DefaultLogger.Info(v...)
-}
-
-func Debug(v ...any) {
-	DefaultLogger.Debug(v...)
-}
-
-func Warning(v ...any) {
-	DefaultLogger.Warning(v...)
-}
-
-func Error(v ...any) {
-	DefaultLogger.Error(v...)
-}
-
-func Infof(format string, v ...any) {
-	DefaultLogger.Infof(format, v...)
-}
-
-func Warningf(format string, v ...any) {
-	DefaultLogger.Warningf(format, v...)
-}
-
-func Debugf(format string, v ...any) {
-	DefaultLogger.Debugf(format, v...)
-}
-
-func Errorf(format string, v ...any) {
-	DefaultLogger.Errorf(format, v...)
 }

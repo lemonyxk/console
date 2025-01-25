@@ -114,12 +114,11 @@ func (c Color) Sprint(v ...any) string {
 }
 
 func (c Colors) Println(v ...any) {
-	var str = joinInterface(v, " ")
 	var colors = text.Colors{}
 	for i := 0; i < len(c); i++ {
 		colors = append(colors, text.Color(c[i]))
 	}
-	write(colors.Sprint(str + "\n"))
+	write(colors.Sprint(v...) + "\n")
 }
 
 func (c Colors) Print(v ...any) {
@@ -139,8 +138,7 @@ func (c Colors) Printf(format string, v ...any) {
 }
 
 func (c Color) Println(v ...any) {
-	var str = joinInterface(v, " ")
-	write(text.Color(c).Sprint(str + "\n"))
+	write(text.Color(c).Sprint(v...) + "\n")
 }
 
 func (c Color) Print(v ...any) {

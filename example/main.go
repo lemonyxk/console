@@ -31,11 +31,6 @@ type hook struct{}
 
 type Name any
 
-func (h *hook) Fire(entry *console.Entry) {
-	// var bts, _ = json.Marshal(entry)
-	// log.Println(string(bts))
-}
-
 func main() {
 
 	// var con = console.NewLogger()
@@ -84,11 +79,9 @@ func main() {
 		ch chan int
 	}{make(chan int)})
 
-	console.Error(`hello world`)
+	console.Color.Println(console.Underline, "hello world", "aaa")
 
-	console.Info("hello world")
+	console.Error.Msg(`hello world`)
 
-	var log = console.NewLogger()
-
-	log.Info("hello world")
+	console.Info.Log("hello world", "aaa")
 }
