@@ -41,6 +41,7 @@ func init() {
 	zerolog.CallerFieldName = "file"
 	zerolog.TimeFieldFormat = time.DateTime
 	zerolog.TimestampFieldName = "time"
+	zerolog.CallerSkipFrameCount = 3
 	zerolog.CallerMarshalFunc = func(pc uintptr, file string, line int) string {
 		var paths = strings.Split(file, string(os.PathSeparator))
 		if len(paths) > 3 {
