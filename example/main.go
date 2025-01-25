@@ -81,7 +81,14 @@ func main() {
 
 	console.Color.Println(console.Underline, "hello world", "aaa")
 
-	console.Error.Msg(`hello world`)
+	console.Error.Log(`hello world`)
+	console.Error.Log(`hello world`)
+	console.Error.Log(`hello world`)
+	console.Error.Log(`hello world`)
 
-	console.Info.Log("hello world", "aaa")
+	console.Info.Logf("%s", "hello world")
+
+	console.Info.Logf("%s", "hello world1")
+
+	console.Info.Logf("%s", "hello world3")
 }

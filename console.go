@@ -6,32 +6,56 @@ import (
 	"io"
 	"os"
 	"strconv"
-	"strings"
 	"time"
 )
 
 type Logger struct {
-	*zerolog.Event
+	logger *zerolog.Logger
+	Level  zerolog.Level
 }
 
-func (l *Logger) Log(msg ...any) {
-	l.Event.Msg(fmt.Sprint(msg...))
+func (l *Logger) Log(v string) {
+	switch l.Level {
+	case zerolog.InfoLevel:
+		l.logger.Info().Msg(v)
+	case zerolog.DebugLevel:
+		l.logger.Debug().Msg(v)
+	case zerolog.WarnLevel:
+		l.logger.Warn().Msg(v)
+	case zerolog.ErrorLevel:
+		l.logger.Error().Msg(v)
+	default:
+	}
 }
 
 func (l *Logger) Logf(format string, v ...any) {
-	l.Event.Msgf(format, v...)
+	switch l.Level {
+	case zerolog.InfoLevel:
+		l.logger.Info().Msgf(format, v...)
+	case zerolog.DebugLevel:
+		l.logger.Debug().Msgf(format, v...)
+	case zerolog.WarnLevel:
+		l.logger.Warn().Msgf(format, v...)
+	case zerolog.ErrorLevel:
+		l.logger.Error().Msgf(format, v...)
+	default:
+	}
 }
 
-func NewLogger(event *zerolog.Event) *Logger {
-	return &Logger{Event: event}
+func NewLogger(logger *zerolog.Logger, level zerolog.Level) *Logger {
+	return &Logger{logger, level}
 }
 
 var defaultLogger = zerolog.New(os.Stdout).With().Caller().Logger()
 
-var Info = NewLogger(defaultLogger.Info())
-var Debug = NewLogger(defaultLogger.Debug())
-var Warn = NewLogger(defaultLogger.Warn())
-var Error = NewLogger(defaultLogger.Error())
+var Info = NewLogger(&defaultLogger, zerolog.InfoLevel)
+var Debug = NewLogger(&defaultLogger, zerolog.DebugLevel)
+var Warn = NewLogger(&defaultLogger, zerolog.WarnLevel)
+var Error = NewLogger(&defaultLogger, zerolog.ErrorLevel)
+
+func Log() zerolog.Logger {
+	return defaultLogger
+}
 
 func New(w io.Writer) zerolog.Logger {
 	return zerolog.New(w)
@@ -43,11 +67,22 @@ func init() {
 	zerolog.TimestampFieldName = "time"
 	zerolog.CallerSkipFrameCount = 3
 	zerolog.CallerMarshalFunc = func(pc uintptr, file string, line int) string {
-		var paths = strings.Split(file, string(os.PathSeparator))
-		if len(paths) > 3 {
-			file = strings.Join(paths[len(paths)-3:], string(os.PathSeparator))
+		var index = -1
+		var count = 0
+		for i := len(file) - 1; i > 0; i-- {
+			if file[i] == os.PathSeparator {
+				count++
+				if count == 3 {
+					index = i
+					break
+				}
+			}
 		}
-		return file + ":" + strconv.Itoa(line)
+
+		if index == -1 {
+			return file + ":" + strconv.Itoa(line)
+		}
+		return file[index+1:] + ":" + strconv.Itoa(line)
 	}
 }
 
