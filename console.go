@@ -14,16 +14,16 @@ type Logger struct {
 	Level  zerolog.Level
 }
 
-func (l *Logger) Log(v string) {
+func (l *Logger) Log(v any) {
 	switch l.Level {
 	case zerolog.InfoLevel:
-		l.logger.Info().Msg(v)
+		l.logger.Info().Msg(fmt.Sprint(v))
 	case zerolog.DebugLevel:
-		l.logger.Debug().Msg(v)
+		l.logger.Debug().Msg(fmt.Sprint(v))
 	case zerolog.WarnLevel:
-		l.logger.Warn().Msg(v)
+		l.logger.Warn().Msg(fmt.Sprint(v))
 	case zerolog.ErrorLevel:
-		l.logger.Error().Msg(v)
+		l.logger.Error().Msg(fmt.Sprint(v))
 	default:
 	}
 }
