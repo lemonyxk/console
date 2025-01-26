@@ -61,11 +61,73 @@ func New(w io.Writer) zerolog.Logger {
 	return zerolog.New(w)
 }
 
+func CallerMarshalFunc(fn func(pc uintptr, file string, line int) string) {
+	zerolog.CallerMarshalFunc = fn
+}
+
+func CallerSkipFrameCount(count int) {
+	zerolog.CallerSkipFrameCount = count
+}
+
+func TimeFieldFormat(format string) {
+	zerolog.TimeFieldFormat = format
+}
+
+func TimestampFieldName(name string) {
+	zerolog.TimestampFieldName = name
+}
+
+func CallerFieldName(name string) {
+	zerolog.CallerFieldName = name
+}
+
+func InterfaceMarshalFunc(fn func(v interface{}) ([]byte, error)) {
+	zerolog.InterfaceMarshalFunc = fn
+}
+
+func ErrorMarshalFunc(fn func(err error) interface{}) {
+	zerolog.ErrorMarshalFunc = fn
+}
+
+func LevelFieldName(name string) {
+	zerolog.LevelFieldName = name
+}
+
+func LevelFieldMarshalFunc(fn func(l zerolog.Level) string) {
+	zerolog.LevelFieldMarshalFunc = fn
+}
+
+func MessageFieldName(name string) {
+	zerolog.MessageFieldName = name
+}
+
+func LevelDebugValue(value string) {
+	zerolog.LevelDebugValue = value
+}
+
+func LevelInfoValue(value string) {
+	zerolog.LevelInfoValue = value
+}
+
+func LevelWarnValue(value string) {
+	zerolog.LevelWarnValue = value
+}
+
+func LevelErrorValue(value string) {
+	zerolog.LevelErrorValue = value
+}
+
 func init() {
+	zerolog.LevelFieldName = "level"
 	zerolog.CallerFieldName = "file"
 	zerolog.TimeFieldFormat = time.DateTime
 	zerolog.TimestampFieldName = "time"
 	zerolog.CallerSkipFrameCount = 3
+	zerolog.MessageFieldName = "log"
+	zerolog.LevelDebugValue = "DEB"
+	zerolog.LevelInfoValue = "INF"
+	zerolog.LevelWarnValue = "WAR"
+	zerolog.LevelErrorValue = "ERR"
 	zerolog.CallerMarshalFunc = func(pc uintptr, file string, line int) string {
 		var index = -1
 		var count = 0

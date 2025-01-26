@@ -82,12 +82,13 @@ func main() {
 	console.Color.Println(console.Underline, "hello world", "aaa")
 
 	console.Error.Log(`hello world`)
+
 	console.Error.Log(`hello world`)
 	console.Error.Log(`hello world`)
 	console.Error.Log(`hello world`)
 
 	console.Info.Logf("%s", "hello world")
-
+	console.LevelInfoValue("info")
 	console.Info.Logf("%s", "hello world1")
 
 	console.Info.Logf("%s", "hello world3")
