@@ -46,7 +46,7 @@ func NewLogger(logger *zerolog.Logger, level zerolog.Level) *Logger {
 	return &Logger{logger, level}
 }
 
-var defaultLogger = zerolog.New(os.Stdout).With().Caller().Logger()
+var defaultLogger = zerolog.New(os.Stdout).With().Caller().Timestamp().Logger()
 
 var Info = NewLogger(&defaultLogger, zerolog.InfoLevel)
 var Debug = NewLogger(&defaultLogger, zerolog.DebugLevel)
@@ -72,7 +72,7 @@ func init() {
 		for i := len(file) - 1; i > 0; i-- {
 			if file[i] == os.PathSeparator {
 				count++
-				if count == 3 {
+				if count == 2 {
 					index = i
 					break
 				}
