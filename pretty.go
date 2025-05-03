@@ -84,7 +84,7 @@ func dump(v reflect.Value) {
 	reset()
 }
 
-func  write(str string) {
+func write(str string) {
 	panicIfError(os.Stdout.Write([]byte(str)))
 }
 
@@ -182,8 +182,10 @@ func format(rv reflect.Value) {
 		printMap(rv)
 	case reflect.Struct:
 		printStruct(rv)
-	case reflect.Array, reflect.Slice:
+	case reflect.Slice:
 		printSlice(rv)
+	case reflect.Array:
+		printArray(rv)
 	case reflect.Ptr:
 		if rv.CanInterface() {
 			printPtr(rv)
@@ -248,6 +250,46 @@ func printMap(v reflect.Value) {
 	for i := 0; i < v.Len(); i++ {
 		value := v.MapIndex(keys[i])
 		writeKey(Bold.Sprint(simple(keys[i]) + ":" + " "))
+		format(value)
+	}
+
+	writeEnd(d, Bold.Sprint("}"))
+
+	deep = d
+}
+
+func printArray(v reflect.Value) {
+
+	var d = deep
+	deep++
+
+	if v.Len() == 0 {
+		//if !v.IsNil() {
+		writeValue(Bold.Sprintf("%s {}", typeString(v)))
+		//} else {
+		//	writeValue(Bold.Sprintf("%s nil", typeString(v)))
+		//}
+		deep = d
+		return
+	}
+
+	//  if is array, will be handled in printPtr
+	if v.Kind() == reflect.Array {
+		if visited[v.Pointer()] {
+			writeValue(Bold.Sprintf("%s {}", typeString(v)))
+			deep = d
+			return
+		}
+		visited[v.Pointer()] = true
+	}
+
+	writeStart(Bold.Mixed(FgRed).Sprint(typeString(v)) + Bold.Sprint(" {"))
+
+	isComplex = true
+
+	for i := 0; i < v.Len(); i++ {
+		value := v.Index(i)
+		writeKey(" ")
 		format(value)
 	}
 

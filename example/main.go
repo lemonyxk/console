@@ -12,6 +12,7 @@ package main
 
 import (
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/lemonyxk/console"
@@ -92,4 +93,12 @@ func main() {
 	console.Info.Logf("%s", "hello world1")
 
 	console.Info.Logf("%s", "hello world3")
+
+	type B struct {
+		Map sync.Map
+	}
+
+	var b = B{}
+
+	console.Pretty.Dump(b)
 }
