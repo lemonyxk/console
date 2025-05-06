@@ -132,28 +132,28 @@ func format(rv reflect.Value) {
 
 	// if is error or Stringer
 	// config details
-	if !details && rv.IsValid() {
-
-		if rv.Kind() == reflect.Interface {
-			format(rv.Elem())
-			return
-		}
-
-		// has Error method
-		var m = rv.MethodByName("Error")
-		if m.IsValid() && m.CanInterface() {
-			writeValue(Bold.Mixed(FgGreen).Sprint(m.Call(nil)[0].String()))
-			return
-		}
-
-		// has String method
-		m = rv.MethodByName("String")
-		if m.IsValid() && m.CanInterface() {
-			writeValue(Bold.Mixed(FgGreen).Sprint(m.Call(nil)[0].String()))
-			return
-		}
-
-	}
+	//if !details && rv.IsValid() {
+	//
+	//	if rv.Kind() == reflect.Interface {
+	//		format(rv.Elem())
+	//		return
+	//	}
+	//
+	//	// has Error method
+	//	var m = rv.MethodByName("Error")
+	//	if m.IsValid() && m.CanInterface() {
+	//		writeValue(Bold.Mixed(FgGreen).Sprint(m.Call(nil)[0].String()))
+	//		return
+	//	}
+	//
+	//	// has String method
+	//	m = rv.MethodByName("String")
+	//	if m.IsValid() && m.CanInterface() {
+	//		writeValue(Bold.Mixed(FgGreen).Sprint(m.Call(nil)[0].String()))
+	//		return
+	//	}
+	//
+	//}
 
 	switch rv.Kind() {
 
